@@ -201,6 +201,11 @@ void deleteCinemaProvinceAndLocation(cinLoc **head, cinLoc **tail, cinProv **fro
     scanf("%d", &provinceCode);
     printf("\n");
 
+    while (provinceCode != tempProv->code)
+    {
+        tempProv = tempProv->next;
+    }
+
     if (tempProv == *front)
     {
         *front = (*front)->next;
@@ -511,6 +516,7 @@ int main()
             scanf(" %[^\n]", inputtedPassword);
             if (strcmp(correctUsername, inputtedUsername) == 0 && strcmp(correctPassword, inputtedPassword) == 0)
             {
+                printf("\n");
                 break;
             }
             attempt++;
