@@ -730,7 +730,7 @@ int main() {
                 break;
 
                 case 5:
-                emptycart(buy);
+                deletebyname(&buy);
                 break;
 
                 case 6:
