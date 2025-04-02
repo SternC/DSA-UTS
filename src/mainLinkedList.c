@@ -76,11 +76,11 @@ void addCinemaLocationAndNewProvince(int counterProv)
     printf("Please Use Uppercase To Input!\n");
     printf("Input New Province: ");
     scanf(" %[^\n]", newProvince);
-    fprintf(cinProvFile, "\n%s#%d", newProvince, counterProv + 1);
+    fprintf(cinProvFile, "%s#%d\n", newProvince, counterProv + 1);
 
     printf("Input New Location: ");
     scanf(" %[^\n]", newLocation);
-    fprintf(cinLocFile, "\n%s#%d#1", newLocation);
+    fprintf(cinLocFile, "%s#%d#1\n", newLocation);
     printf("\n");
 
     fclose(cinProvFile);
