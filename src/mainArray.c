@@ -25,6 +25,7 @@ void addfood(struct food snack[], int n) {
     printf("4. Bakery\n");
     printf("Choice: ");
     scanf("%d", &choice);
+    getchar(); 
 
     switch (choice) {
         case 1:
@@ -52,10 +53,13 @@ void addfood(struct food snack[], int n) {
     for (int i = 0; i < n; i++) {
         printf("Name: ");
         scanf("%49s", snack[i].name); 
+        getchar(); 
         printf("Stock: ");
         scanf("%d", &snack[i].stock);
+        getchar(); 
         printf("Price: ");
         scanf("%d", &snack[i].price);
+        getchar();
         fprintf(pick, "%s#%d#%d\n", snack[i].name, snack[i].stock, snack[i].price);
     }
     fclose(pick);
@@ -70,10 +74,13 @@ void addbev(struct beverage drink[], int n) {
     for (int i = 0; i < n; i++) {
         printf("Drink: ");
         scanf("%49s", drink[i].name); 
+        getchar(); 
         printf("Quantity: ");
         scanf("%d", &drink[i].stock);
+        getchar();
         printf("Price: ");
         scanf("%d", &drink[i].price);
+        getchar(); 
         fprintf(beverage, "%s#%d#%d\n", drink[i].name, drink[i].stock, drink[i].price); 
     }
     fclose(beverage);
@@ -88,6 +95,7 @@ void checkinventory(struct food snack[], struct beverage drink[]) {
     printf("2. Beverage\n");
     printf("Choice: ");
     scanf("%d", &choice);
+    getchar(); 
 
     if (choice == 1) {
         FILE *pick = NULL;
@@ -98,6 +106,7 @@ void checkinventory(struct food snack[], struct beverage drink[]) {
         printf("4. Bakery\n");
         printf("Choice: ");
         scanf("%d", &choice);
+        getchar(); 
 
         char *file = NULL;
         switch (choice) {
@@ -126,6 +135,7 @@ void checkinventory(struct food snack[], struct beverage drink[]) {
 
         printf("Name: ");
         scanf("%49s", merk);
+        getchar();
 
         while (fscanf(pick, "%[^#]#%d#%d\n", snack[n].name, &snack[n].stock, &snack[n].price) != EOF) {
             if (strcmp(merk, snack[n].name) == 0) {
@@ -142,6 +152,7 @@ void checkinventory(struct food snack[], struct beverage drink[]) {
     } else if (choice == 2) {
         printf("Beverage: ");
         scanf("%99s", merk); 
+        getchar(); 
         FILE *beverage = fopen("beverage.txt", "r");
         if (!beverage) {
             printf("Error.\n");
@@ -170,6 +181,7 @@ void changepricestock(struct food snack[], struct beverage drink[], int n) {
     printf("2. Beverage\n");
     printf("Choice: ");
     scanf("%d", &choice);
+    getchar(); 
 
     if (choice == 1) {
         FILE *pick = NULL;
@@ -180,6 +192,7 @@ void changepricestock(struct food snack[], struct beverage drink[], int n) {
         printf("4. Bakery\n");
         printf("Choice: ");
         scanf("%d", &choice);
+        getchar(); 
 
         char *file = NULL;
         switch (choice) {
@@ -208,6 +221,7 @@ void changepricestock(struct food snack[], struct beverage drink[], int n) {
 
         printf("Name: ");
         scanf("%49s", merk);
+        getchar(); 
 
         int count = 0;
         while (fscanf(pick, "%[^#]#%d#%d\n", snack[count].name, &snack[count].stock, &snack[count].price) != EOF) {
@@ -223,13 +237,16 @@ void changepricestock(struct food snack[], struct beverage drink[], int n) {
                 printf("1. Change Price\n");
                 printf("2. Add Stock\n");
                 scanf("%d", &choice);
+                getchar(); 
                 if (choice == 1) {
                     printf("Input the new price: ");
                     scanf("%d", &newprice);
+                    getchar(); 
                     snack[i].price = newprice;
                 } else if (choice == 2) {
                     printf("Input added stock quantity: ");
                     scanf("%d", &newstock);
+                    getchar(); 
                     snack[i].stock += newstock;
                 }
                 break;
@@ -258,6 +275,7 @@ void changepricestock(struct food snack[], struct beverage drink[], int n) {
     } else if (choice == 2) {
         printf("Beverage: ");
         scanf("%99s", merk); 
+        getchar(); 
         FILE *beverage = fopen("beverage.txt", "r");
         if (!beverage) {
             printf("Error.\n");
@@ -278,13 +296,16 @@ void changepricestock(struct food snack[], struct beverage drink[], int n) {
                 printf("1. Change Price\n");
                 printf("2. Add Stock\n");
                 scanf("%d", &choice);
+                getchar(); 
                 if (choice == 1) {
                     printf("Input the new price: ");
                     scanf("%d", &newprice);
+                    getchar(); 
                     drink[i].price = newprice;
                 } else if (choice == 2) {
                     printf("Input new stock quantity: ");
                     scanf("%d", &newstock);
+                    getchar();
                     drink[i].stock += newstock;
                 }
                 break; 
@@ -401,63 +422,70 @@ struct cart{
     int carttop;
 };
 
-void buybev(struct cart *buy, struct beverage drink[]) {
-    int i, n = 1, id, quan;
-    FILE *beverage = fopen("beverage.txt", "r");
-    if (beverage == NULL) {
-        printf("Error opening beverage file.\n");
-        return;
-    }
-
-    printf("========================================\n");
-    printf("                  Menu                  \n");
-    printf("========================================\n");
-    while (fscanf(beverage, "%[^#]#%d#%d\n", drink[n].name, &drink[n].stock, &drink[n].price) != EOF) {
-        printf("%d.  %-10s : %-20s\n", n, "Drink", drink[n].name);
-        printf("    %-10s : %-18d\n", "Price", drink[n].price);
+    void buybev(struct cart *buy, struct beverage drink[] ) {
+        int i, n = 0, id, quan;  // Start with n=0
+        FILE *beverage = fopen("beverage.txt", "r");
+        if (beverage == NULL) {
+            printf("Error opening beverage file.\n");
+            return;
+        }
+    
         printf("========================================\n");
-        n++;
-    }
-    fclose(beverage);
-
-    printf("Enter id: ");
-    scanf("%d", &id);
-    printf("Enter quantity: ");
-    scanf("%d", &quan);
-
-    if (buy->carttop == MAX_CART - 1) {
-        printf("Cart is full.\n");
-        return;
-    }
-
-    if (id > 0 && id < n) {
-        if (drink[id - 1].stock < quan) {
-            printf("Sorry, we only have %d in stock.\n", drink[id - 1].stock);
-            return;
-        }
-
-        buy->carttop++;
-        strcpy(buy->items[buy->carttop].buydrink.name, drink[id - 1].name);
-        buy->items[buy->carttop].bquantitiy = quan;
-        buy->items[buy->carttop].bprice = quan * drink[id - 1].price;
-
-        drink[id - 1].stock -= quan;
-
-        beverage = fopen("beverage.txt", "w");
-        if (!beverage) {
-            printf("Error.\n");
-            return;
-        }
-        for (int i = 0; i < n - 1; i++) {
-            fprintf(beverage, "%s#%d#%d\n", drink[i].name, drink[i].stock, drink[i].price);
+        printf("                  Menu                  \n");
+        printf("========================================\n");
+        
+        
+        while (fscanf(beverage, "%49[^#]#%d#%d\n", 
+               drink[n].name, &drink[n].stock, &drink[n].price) == 3) {
+            printf("%d.  %-10s : %-20s\n", n+1, "Drink", drink[n].name);
+            printf("    %-10s : %-18d\n", "Price", drink[n].price);
+            printf("========================================\n");
+            n++;
         }
         fclose(beverage);
-
-        printf("Item added to cart successfully.\n");
-    } else {
-        printf("Invalid item ID.\n");
+    
+        printf("Enter id: ");
+        scanf("%d", &id);
+        getchar(); 
+        printf("Enter quantity: ");
+        scanf("%d", &quan);
+        getchar(); 
+    
+        if (buy->carttop == MAX_CART - 1) {
+            printf("Cart is full.\n");
+            return;
+        }
+    
+        
+        if (id > 0 && id <= n) { 
+            if (drink[id-1].stock < quan) {
+                printf("Sorry, we only have %d in stock.\n", drink[id-1].stock);
+                return;
+            }
+    
+            buy->carttop++;
+            strcpy(buy->items[buy->carttop].buydrink.name, drink[id-1].name);
+            buy->items[buy->carttop].bquantitiy = quan;
+            buy->items[buy->carttop].bprice = quan * drink[id-1].price;
+    
+        
+            drink[id-1].stock -= quan;
+    
+            beverage = fopen("beverage.txt", "w");
+            if (!beverage) {
+                printf("Error saving changes.\n");
+                return;
+            }
+            for (i = 0; i < n; i++) {  
+                fprintf(beverage, "%s#%d#%d\n", drink[i].name, drink[i].stock, drink[i].price);
+            }
+            fclose(beverage);
+    
+            printf("'%s' added to cart successfully.\n", drink[id-1].name);
+        } else {
+            printf("Invalid item ID. Please choose 1-%d.\n", n);
+        }
     }
-}
 
 void buyfood(struct cart *buy, struct food snack[]) {
     int i, n = 0, id, quan;
@@ -469,6 +497,7 @@ void buyfood(struct cart *buy, struct food snack[]) {
     printf("4. Bakery\n");
     printf("Choice: ");
     scanf("%d", &i);
+    getchar(); 
 
     const char *file = NULL;
     switch (i) {
@@ -508,8 +537,10 @@ void buyfood(struct cart *buy, struct food snack[]) {
 
     printf("Enter id: ");
     scanf("%d", &id);
+    getchar(); 
     printf("Enter quantity: ");
     scanf("%d", &quan);
+    getchar();
 
     if (buy->carttop == MAX_CART - 1) {
         printf("Cart is full.\n");
@@ -655,6 +686,7 @@ int main() {
         printf("2. User\n");
         printf("Choice: ");
         scanf("%d", &choice);
+        getchar(); 
     
         if (choice == 1) {
             while (1){
@@ -667,6 +699,7 @@ int main() {
             printf("6. Exit\n"); 
             printf("Choice : ");
             scanf("%d", &choice);
+            getchar(); 
 
             switch (choice) {
                 case 1:
@@ -709,9 +742,10 @@ int main() {
             printf("3. See cart \n");
             printf("4. Change quantity\n");
             printf("5. Empty cart\n");
-            printf("6. Exit ");
+            printf("6. Exit \n");
             printf("Choice: ");
             scanf("%d", &choice);
+            getchar(); 
             switch (choice){
                 case 1:
                 buyfood(&buy, snack);

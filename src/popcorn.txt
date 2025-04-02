@@ -1,3 +1,1 @@
-milo#17#50000
-caramel#17#20000
-butter#30#10000
+butter#18#20000
