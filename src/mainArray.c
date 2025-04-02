@@ -741,7 +741,7 @@ int main() {
             printf("2. Buy drinks\n");
             printf("3. See cart \n");
             printf("4. Change quantity\n");
-            printf("5. Empty cart\n");
+            printf("5. Delete item\n");
             printf("6. Exit \n");
             printf("Choice: ");
             scanf("%d", &choice);
