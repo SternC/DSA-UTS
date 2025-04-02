@@ -432,7 +432,7 @@ void buybev(struct cart *buy, struct beverage drink[]) {
 
     if (id > 0 && id < n) {
         if (drink[id - 1].stock < quan) {
-            printf("Sorry, this beverage is not available.\n");
+            printf("Sorry, we only have %d in stock.\n", drink[id - 1].stock);
             return;
         }
 
@@ -441,19 +441,11 @@ void buybev(struct cart *buy, struct beverage drink[]) {
         buy->items[buy->carttop].bquantitiy = quan;
         buy->items[buy->carttop].bprice = quan * drink[id - 1].price;
 
-        FILE *cart = fopen("cartbev.txt", "a");
-        if (!cart) {
-            printf("Error opening cart file.\n");
-            return;
-        }
-        fprintf(cart, "%s#%d#%d\n", buy->items[buy->carttop].buydrink.name, buy->items[buy->carttop].bquantitiy, buy->items[buy->carttop].bprice);
-        fclose(cart);
-
         drink[id - 1].stock -= quan;
 
         beverage = fopen("beverage.txt", "w");
         if (!beverage) {
-            printf("Error opening beverage file for writing.\n");
+            printf("Error.\n");
             return;
         }
         for (int i = 0; i < n - 1; i++) {
@@ -499,7 +491,7 @@ void buyfood(struct cart *buy, struct food snack[]) {
 
     pick = fopen(file, "r");
     if (!pick) {
-        printf("Error opening file.\n");
+        printf("Error.\n");
         return;
     }
 
@@ -526,7 +518,7 @@ void buyfood(struct cart *buy, struct food snack[]) {
 
     if (id > 0 && id <= n) {
         if (snack[id - 1].stock < quan) {
-            printf("Sorry, this food is not available.\n");
+            printf("Sorry, we only have %d in stock.\n", snack[id - 1].stock);
             return;
         }
 
@@ -535,19 +527,11 @@ void buyfood(struct cart *buy, struct food snack[]) {
         buy->items[buy->carttop].fquantitiy = quan;
         buy->items[buy->carttop].fprice = quan * snack[id - 1].price;
 
-        FILE *cart = fopen("cartfood.txt", "a");
-        if (!cart) {
-            printf("Error opening cart file.\n");
-            return;
-        }
-        fprintf(cart, "%s#%d#%d\n", buy->items[buy->carttop].buyfood.name, buy->items[buy->carttop].fquantitiy, buy->items[buy->carttop].fprice);
-        fclose(cart);
-
         snack[id - 1].stock -= quan;
 
         pick = fopen(file, "w");
         if (!pick) {
-            printf("Error opening file for writing.\n");
+            printf("Error.\n");
             return;
         }
         for (int i = 0; i < n; i++) {
@@ -562,59 +546,27 @@ void buyfood(struct cart *buy, struct food snack[]) {
 }
 
 void seecart(struct cart buy) {
-    int n = 0;
-    int m = 0;
-    FILE *cart1 = fopen("cartfood.txt", "r");
-    if (cart1 == NULL || buy.carttop == -1) {
-        printf("\nFood Cart is empty\n");
+    if (buy.carttop == -1) {
+        printf("\nCart is empty\n");
         return;
     }
 
     printf("===================================================================\n");
     printf("                               Cart                                \n");
     printf("===================================================================\n");
-    printf("                               Food                                \n");
-    printf("===================================================================\n");
-    while (fscanf(cart1, "%[^#]#%d#%d\n", buy.items[n].buyfood.name, &buy.items[n].fquantitiy, &buy.items[n].fprice) != EOF) {
-        printf("Food    : %-15s  Quantity: %-5d  Total: %-5d\n", buy.items[n].buyfood.name, buy.items[n].fquantitiy, buy.items[n].fprice);
-        n++;
+    for (int i = 0; i <= buy.carttop; i++) {
+        if (buy.items[i].fquantitiy > 0) {
+            printf("Food    : %-15s  Quantity: %-5d  Total: %-5d\n", buy.items[i].buyfood.name, buy.items[i].fquantitiy, buy.items[i].fprice);
+        }
+        if (buy.items[i].bquantitiy > 0) {
+            printf("Drink   : %-15s  Quantity: %-5d  Total: %-5d\n", buy.items[i].buydrink.name, buy.items[i].bquantitiy, buy.items[i].bprice);
+        }
     }
-    fclose(cart1);
-    printf("===================================================================\n");
-
-    FILE *cart2 = fopen("cartbev.txt", "r");
-    if (cart2 == NULL || buy.carttop == -1) {
-        printf("\nDrink cart is empty\n");
-        return;
-    }
-
-    printf("===================================================================\n");
-    printf("                               Drink                               \n");
-    printf("===================================================================\n");
-    while (fscanf(cart2, "%[^#]#%d#%d\n", buy.items[m].buydrink.name, &buy.items[m].bquantitiy, &buy.items[m].bprice) != EOF) {
-        printf("Drink   : %-15s  Quantity: %-5d  Total: %-5d\n", buy.items[m].buydrink.name, buy.items[m].bquantitiy, buy.items[m].bprice);
-        m++;
-    }
-    fclose(cart2);
     printf("===================================================================\n");
 }
 
-void emptycart(struct cart buy){
-    FILE *cart1 = fopen("cartfood.txt", "w");
-    if (cart1 != NULL) {
-        fclose(cart1);
-    }
 
-    FILE *cart2 = fopen("cartbev.txt", "w");
-    if (cart2 != NULL) {
-        fclose(cart2);
-    }
-
-    buy.carttop = -1;
-    printf("Cart has been emptied.\n");
-}
-
-void changequantity(struct cart buy) {
+void changequantity(struct cart *buy) {
     int newquan, choice;
     char merk[100];
     printf("Choice:\n");
@@ -623,97 +575,73 @@ void changequantity(struct cart buy) {
     printf("Choice: ");
     scanf("%d", &choice);
 
-    if (choice == 1) {
-        FILE *change = fopen("cartfood.txt", "r");
-        if (!change) {
-            printf("Error opening food cart file.\n");
-            return;
-        }
+    printf("Name: ");
+    scanf("%49s", merk);
 
-        printf("Name: ");
-        scanf("%49s", merk);
+    int found = 0;
+    for (int i = 0; i <= buy->carttop; i++) {
+        if (choice == 1 && strcmp(merk, buy->items[i].buyfood.name) == 0) {
+            printf("New quantity: ");
+            scanf("%d", &newquan);
+            buy->items[i].fprice = (buy->items[i].fprice / buy->items[i].fquantitiy) * newquan;
+            buy->items[i].fquantitiy = newquan;
+            found = 1;
+            break;
+        } else if (choice == 2 && strcmp(merk, buy->items[i].buydrink.name) == 0) {
+            printf("New quantity: ");
+            scanf("%d", &newquan);
+            buy->items[i].bprice = (buy->items[i].bprice / buy->items[i].bquantitiy) * newquan;
+            buy->items[i].bquantitiy = newquan;
+            found = 1;
+            break;
+        }
+    }
 
-        int count = 0;
-        while (fscanf(change, "%[^#]#%d#%d\n", buy.items[count].buyfood.name, &buy.items[count].fquantitiy, &buy.items[count].fprice) != EOF) {
-            count++;
-        }
-        fclose(change);
-
-        int found = 0;
-        for (int i = 0; i < count; i++) {
-            if (strcmp(merk, buy.items[i].buyfood.name) == 0) {
-                found = 1;
-                printf("New quantity: ");
-                scanf("%d", &newquan);
-                buy.items[i].fquantitiy = newquan;
-                buy.items[i].fprice = newquan * buy.items[i].fprice / buy.items[i].fquantitiy; 
-                break;
-            }
-        }
-
-        if (!found) {
-            printf("Item not found.\n");
-            return;
-        }
-
-        change = fopen("cartfood.txt", "w");
-        if (!change) {
-            printf("Error opening food cart file for writing.\n");
-            return;
-        }
-        for (int i = 0; i < count; i++) {
-            fprintf(change, "%s#%d#%d\n", buy.items[i].buyfood.name, buy.items[i].fquantitiy, buy.items[i].fprice);
-        }
-        fclose(change);
-        printf("Food cart updated successfully.\n");
-
-    } else if (choice == 2) {
-        FILE *change = fopen("cartbev.txt", "r");
-        if (!change) {
-            printf("Error opening beverage cart file.\n");
-            return;
-        }
-
-        printf("Name: ");
-        scanf("%49s", merk);
-
-        int count = 0;
-        while (fscanf(change, "%[^#]#%d#%d\n", buy.items[count].buydrink.name, &buy.items[count].bquantitiy, &buy.items[count].bprice) != EOF) {
-            count++;
-        }
-        fclose(change);
-
-        int found = 0;
-        for (int i = 0; i < count; i++) {
-            if (strcmp(merk, buy.items[i].buydrink.name) == 0) {
-                found = 1;
-                printf("New quantity: ");
-                scanf("%d", &newquan);
-                buy.items[i].bquantitiy = newquan;
-                buy.items[i].bprice = newquan * buy.items[i].bprice / buy.items[i].bquantitiy; 
-                break;
-            }
-        }
-
-        if (!found) {
-            printf("Item not found.\n");
-            return;
-        }
-
-        change = fopen("cartbev.txt", "w");
-        if (!change) {
-            printf("Error opening beverage cart file for writing.\n");
-            return;
-        }
-        for (int i = 0; i < count; i++) {
-            fprintf(change, "%s#%d#%d\n", buy.items[i].buydrink.name, buy.items[i].bquantitiy, buy.items[i].bprice);
-        }
-        fclose(change);
-        printf("Beverage cart updated successfully.\n");
+    if (!found) {
+        printf("Item not found in cart.\n");
     } else {
-        printf("Invalid choice.\n");
+        printf("Cart updated successfully.\n");
     }
 }
+
+void deletebyname(struct cart *buy) {
+    int choice;
+    char name[50];
+    printf("Choice:\n");
+    printf("1. Delete Food\n");
+    printf("2. Delete Beverage\n");
+    printf("Choice: ");
+    scanf("%d", &choice);
+
+    printf("Enter name to delete: ");
+    scanf("%49s", name);
+
+    int found = 0;
+    for (int i = 0; i <= buy->carttop; i++) {
+        if (choice == 1 && strcmp(buy->items[i].buyfood.name, name) == 0 && buy->items[i].fquantitiy > 0) {
+            for (int j = i; j < buy->carttop; j++) {
+                buy->items[j] = buy->items[j + 1];
+            }
+            buy->carttop--;
+            found = 1;
+            printf("Food item '%s' deleted successfully from cart.\n", name);
+            break;
+        } else if (choice == 2 && strcmp(buy->items[i].buydrink.name, name) == 0 && buy->items[i].bquantitiy > 0) {
+            for (int j = i; j < buy->carttop; j++) {
+                buy->items[j] = buy->items[j + 1];
+            }
+            buy->carttop--;
+            found = 1;
+            printf("Beverage item '%s' deleted successfully from cart.\n", name);
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Item '%s' not found in cart.\n", name);
+    }
+}
+
 
 int main() {
     int j, choice;
@@ -798,7 +726,7 @@ int main() {
                 break;
 
                 case 4:
-                changequantity(buy);
+                changequantity(&buy);
                 break;
 
                 case 5:
