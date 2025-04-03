@@ -68,7 +68,7 @@ void deleteProvinceNodes(cinProv **front, cinProv **back)
 
 void addCinemaLocationAndNewProvince(int counterProv)
 {
-    char newProvince[50], newLocation[50];
+    char newProvince[51], newLocation[51];
 
     FILE *cinProvFile = fopen("cinema_province.txt", "a");
     FILE *cinLocFile = fopen("cinema_location.txt", "a");
@@ -80,7 +80,7 @@ void addCinemaLocationAndNewProvince(int counterProv)
 
     printf("Input New Location: ");
     scanf(" %[^\n]", newLocation);
-    fprintf(cinLocFile, "%s#%d#1\n", newLocation);
+    fprintf(cinLocFile, "%s#%d#1\n", newLocation, counterProv + 1);
     printf("\n");
 
     fclose(cinProvFile);
@@ -91,7 +91,7 @@ void addCinemaLocationFromExistingProvince(cinLoc **head)
 {
     cinLoc *tempLoc;
     int provinceCode;
-    char newLocation[50];
+    char newLocation[51];
     int newNum = 0;
 
     tempLoc = *head;
@@ -340,8 +340,8 @@ void chooseCinema(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
         counterLoc++;
     }
 
-    fclose(cinLocFile);
     fclose(cinProvFile);
+    fclose(cinLocFile);
 
     tempProv = *front;
     tempLoc = *head;
@@ -356,11 +356,11 @@ void chooseCinema(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
     scanf("%d", &userProv);
     printf("\n");
 
-    for (int j = 0; j < counterLoc; j++)
+    for (int i = 0; i < counterLoc; i++)
     {
         if (tempLoc->code == userProv)
         {
-            printf("%d. %s\n", j + 1, tempLoc->cinema);
+            printf("%d. %s\n", i + 1, tempLoc->cinema);
         }
         tempLoc = tempLoc->next;
     }
@@ -489,7 +489,8 @@ void owner(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
 int main()
 {
     int login, attempt = 0;
-    char correctUsername[] = {"admin"}, inputtedUsername[50], correctPassword[] = {"admin"}, inputtedPassword[50];
+    char correctUsername[] = {"admin"}, inputtedUsername[51];
+    char correctPassword[] = {"admin"}, inputtedPassword[51];
     cinLoc *head, *tail;
     cinProv *front, *back;
 
