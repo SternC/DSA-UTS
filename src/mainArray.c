@@ -2,6 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+void deleteAllLocationAndProvince(int *counterProv, int *counterLoc, char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3][101])
+{
+    for (int i = 0; i < 100; i++)
+    {
+        strcpy(provinceAndCode[i][0], "");
+        strcpy(provinceAndCode[i][1], "");
+    }
+
+    for (int i = 0; i < 100; i++)
+    {
+        strcpy(locationAndCodeAndNum[i][0], "");
+        strcpy(locationAndCodeAndNum[i][1], "");
+        strcpy(locationAndCodeAndNum[i][2], "");
+    }
+
+    *counterProv = 0;
+    *counterLoc = 0;
+}
+
 void addCinemaLocationAndNewProvince(int counterProv)
 {
     char newProvince[51], newLocation[51];
@@ -16,7 +35,7 @@ void addCinemaLocationAndNewProvince(int counterProv)
 
     printf("Input New Location: ");
     scanf(" %[^\n]", newLocation);
-    fprintf(cinLocFile, "%s#%s#1\n", newLocation);
+    fprintf(cinLocFile, "%s#%d#1\n", newLocation, counterProv + 1);
     printf("\n");
 
     fclose(cinProvFile);
@@ -55,7 +74,7 @@ void addCinemaLocationFromExistingProvince(char provinceAndCode[100][2][101], ch
     printf("Please Use Uppercase To Input!\n");
     printf("Input New Location: ");
     scanf(" %[^\n]", newLocation);
-    fprintf(cinLocFile, "\n%s#%s#%d", newLocation, provinceCode, newNum + 1);
+    fprintf(cinLocFile, "%s#%s#%d\n", newLocation, provinceCode, newNum + 1);
     printf("\n");
 
     fclose(cinProvFile);
@@ -79,7 +98,7 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
     {
         if (strcmp(locationAndCodeAndNum[i][1], provinceCode) == 0)
         {
-            printf("%d. %s\n", i + 1, locationAndCodeAndNum[i][0]);
+            printf("%s. %s\n", locationAndCodeAndNum[i][2], locationAndCodeAndNum[i][0]);
         }
     }
 
@@ -273,8 +292,10 @@ void owner(char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3]
             break;
 
         default:
+            deleteAllLocationAndProvince(&counterProv, &counterLoc, provinceAndCode, locationAndCodeAndNum);
             return;
         }
+        deleteAllLocationAndProvince(&counterProv, &counterLoc, provinceAndCode, locationAndCodeAndNum);
     }
 }
 
