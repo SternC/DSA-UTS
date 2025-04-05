@@ -1151,7 +1151,7 @@ int main(){
         printf("Select Option: \n");
         printf("1. Owner\n");
         printf("2. User\n");
-        printf("3. Exit");
+        printf("3. Exit\n");
         printf("Selection: ");
 
         scanf("%d", &choice);
@@ -1220,7 +1220,9 @@ int main(){
                 printf("Select your category: \n");
                 printf("1. Select movie\n");
                 printf("2. Order food\n");
-                printf("3. Exit");
+                printf("3. Exit\n");
+                printf("Selection: ");
+                scanf(" %d", &choice2);
 
                 if (choice2 == 1){
                     //Buat punya feli
