@@ -1037,49 +1037,104 @@ void foodModification(){
     struct beverage drink[100];
     struct cart buy = {.carttop = -1};
 
-    printf("\nChoice : \n");
-    printf("1. Add Food\n");
-    printf("2. Add Beverage\n");
-    printf("3. Print Inventory\n");
-    printf("4. Change Stock and Price\n");
-    printf("5. Check Inventory\n");
-    printf("6. Exit\n"); 
-    printf("Choice : ");
-    scanf("%d", &choice);
-    getchar(); 
+    while (1){
+        printf("\nChoice : \n");
+        printf("1. Add Food\n");
+        printf("2. Add Beverage\n");
+        printf("3. Print Inventory\n");
+        printf("4. Change Stock and Price\n");
+        printf("5. Check Inventory\n");
+        printf("6. Exit\n"); 
+        printf("Choice : ");
+        scanf("%d", &choice);
+        getchar(); 
 
-    switch (choice) {
-        case 1:
-            printf("Enter number of food: ");
-            scanf("%d", &j);
-            addfood(snack, j);
+        switch (choice) {
+            case 1:
+                printf("Enter number of food: ");
+                scanf("%d", &j);
+                addfood(snack, j);
+                break;
+
+            case 2:
+                printf("Enter number of beverage: ");
+                scanf("%d", &j);
+                addbev(drink, j);
+                break;
+
+            case 3:
+                printinventory(snack, drink);
+                break;
+
+            case 4:
+                changepricestock(snack, drink, 100);
+                break;
+
+            case 5:
+                checkinventory(snack, drink);
+                break; 
+
+            case 6:
+                printf("Exiting program.\n");
+                return;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+        }
+}
+
+void ownerFoodMod(){
+
+    int choice = 0;
+    int j;
+    struct food snack[100];
+    struct beverage drink[100];
+    struct cart buy = {.carttop = -1};
+
+    while (1){
+        printf("Choice : \n");
+        printf("1. Buy food\n");
+        printf("2. Buy drinks\n");
+        printf("3. See cart \n");
+        printf("4. Change quantity\n");
+        printf("5. Delete item\n");
+        printf("6. Exit \n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+        getchar(); 
+        switch (choice){
+            case 1:
+            buyfood(&buy, snack);
             break;
 
-        case 2:
-            printf("Enter number of beverage: ");
-            scanf("%d", &j);
-            addbev(drink, j);
+            case 2:
+            buybev(&buy, drink);
             break;
 
-        case 3:
-            printinventory(snack, drink);
+            case 3:
+            seecart(buy);
             break;
 
-        case 4:
-            changepricestock(snack, drink, 100);
+            case 4:
+            changequantity(&buy);
             break;
 
-        case 5:
-            checkinventory(snack, drink);
-            break; 
+            case 5:
+            deletebyname(&buy);
+            break;
 
-        case 6:
+            case 6:
             printf("Exiting program.\n");
-            return 0;
-
-        default:
+            return;
+            
+            default:
             printf("Invalid choice.\n");
+
+        }
+     
     }
+
 }
 
 
@@ -1091,6 +1146,8 @@ int main(){
     int ownerSelection = 0;
     char correctUsername[] = {"admin"}, inputtedUsername[50];
     char correctPassword[] = {"admin"}, inputtedPassword[50];
+    char provinceAndCode[100][2][101];
+    char locationAndCodeAndNum[100][3][101];
 
     while(choice != 3){
         printf("Select Option: \n");
@@ -1132,9 +1189,9 @@ int main(){
                     printf("1. Location modification\n");
                     printf("2. Movie list modification\n");
                     printf("3. Food list modification\n");
-                    printf("4. Exit");
+                    printf("4. Exit\n");
                     printf("Selection: ");
-                    scanf("%d", &ownerSelection);
+                    scanf(" %d", &ownerSelection);
 
                     if (ownerSelection == 1){
                         owner();
@@ -1144,6 +1201,12 @@ int main(){
                     }
                     else if (ownerSelection == 3){
                         foodModification();
+                    }
+                    else if (ownerSelection == 4){
+                        break;
+                    }
+                    else{
+                        continue;
                     }
                 }
 
@@ -1166,7 +1229,7 @@ int main(){
                 }
 
                 else if (choice2 == 2){
-                    // Buat michi
+                    ownerFoodMod();
                 }
                 else if (choice2 == 3){
                     break;
