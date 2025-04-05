@@ -216,10 +216,13 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
     fclose(cinLocFile);
 }
 
-void owner(char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3][101])
+void owner()
 {
     int userActivity;
     int counterProv, counterLoc, counter;
+
+    char provinceAndCode[100][2][101];
+    char locationAndCodeAndNum[100][3][101];
 
     while (1)
     {
@@ -299,12 +302,15 @@ void owner(char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3]
     }
 }
 
-void chooseCinema(char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3][101])
+void chooseCinema()
 {
     char userProv[101], userCinema[101];
     int counterProv, counterLoc, counter;
 
     counterLoc = counterProv = 0;
+
+    char provinceAndCode[100][2][101];
+    char locationAndCodeAndNum[100][3][101];
 
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "r");
@@ -361,7 +367,7 @@ int main()
 
     if (login == 1)
     {
-        chooseCinema(provinceAndCode, locationAndCodeAndNum);
+        chooseCinema();
     }
     else if (login == 2)
     {
@@ -389,7 +395,7 @@ int main()
 
         if (attempt != 3)
         {
-            owner(provinceAndCode, locationAndCodeAndNum);
+            owner();
         }
     }
 
