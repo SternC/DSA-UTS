@@ -1146,8 +1146,6 @@ int main(){
     int ownerSelection = 0;
     char correctUsername[] = {"admin"}, inputtedUsername[50];
     char correctPassword[] = {"admin"}, inputtedPassword[50];
-    char provinceAndCode[100][2][101];
-    char locationAndCodeAndNum[100][3][101];
 
     while(choice != 3){
         printf("Select Option: \n");
