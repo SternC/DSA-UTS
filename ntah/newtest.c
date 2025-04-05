@@ -61,38 +61,27 @@ void addMovie(Movie movies[], int *count) {
 
 void removeMovie(Movie movies[], int *count) {
     if (*count == 0) {
-        printf("No movies to remove! Please add a movie first.\n");
+        printf("Movie List is Empty! Please add a movie first.\n");
         return;
     }
-    char removeName[50];
-    printf("\nSearch Movie Name to Remove: ");
-    scanf(" %[^\n]", removeName);
-    
-    int found = -1;
-    for (int i = 0; i < *count; i++) {
-        int match = 1;
-        for (int j = 0; removeName[j] != '\0' || movies[i].movieName[j] != '\0'; j++) {
-            if ((removeName[j] - 32) != (movies[i].movieName[j] - 32)) {
-                match = 0;
-                break;
-            }
-        }
-        if (match) {
-            found = i;
-            break;
-        }
-    }
-    
-    if (found == -1) {
-        printf("\nMovie not found!\n");
+
+    int removeNum;
+    printf("\nInput Movie Number to Remove: ");
+    scanf("%d", &removeNum);
+
+    if (removeNum < 1 || removeNum > *count) {
+        printf("Invalid movie number!\n");
         return;
     }
-    for (int i = found; i < *count - 1; i++) {
+
+    printf("Removing movie: %s\n", movies[removeNum - 1].movieName);
+
+    for (int i = removeNum - 1; i < *count - 1; i++) {
         movies[i] = movies[i + 1];
     }
     (*count)--;
     saveMovies(movies, count);
-    printf("\nMovie '%s' removed successfully!\n", removeName);
+    printf("Movie removed successfully!\n");
 }
 
 void viewMovies(Movie movies[], int *count) {
@@ -104,9 +93,9 @@ void viewMovies(Movie movies[], int *count) {
     printf(" No |                  Movie Name                   |        Genre       |  Duration |       Director     |Age Rating|\n");
     printf("----------------------------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < *count; i++) {
-        printf("%4d|%-47s|%-20s|%-11d|%-20s|%-10s|\n",
+        printf("%4d|%-47s|%-20s|%-4d%7s|%-20s|%-10s|\n",
                 i+1, movies[i].movieName, movies[i].genre, 
-                movies[i].duration, movies[i].director, 
+                movies[i].duration,"minutes", movies[i].director, 
                 movies[i].age);
     }
 }
@@ -175,6 +164,7 @@ int main() {
                 if (menu == 1) {
                     addMovie(movies, &count);
                 } else if (menu == 2) {
+                    viewMovies(movies, &count);
                     removeMovie(movies, &count);
                 }
             }
