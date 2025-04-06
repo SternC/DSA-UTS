@@ -940,8 +940,8 @@ void buyfood(struct cart *buy, struct food snack[]) {
     }
 }
 
-void seecart(struct cart buy) {
-    if (buy.carttop == -1) {
+void seecart(struct cart *buy) {
+    if (buy->carttop == -1) {
         printf("\nCart is empty\n");
         return;
     }
@@ -949,12 +949,12 @@ void seecart(struct cart buy) {
     printf("===================================================================\n");
     printf("                               Cart                                \n");
     printf("===================================================================\n");
-    for (int i = 0; i <= buy.carttop; i++) {
-        if (buy.items[i].fquantitiy > 0) {
-            printf("Food    : %-15s  Quantity: %-5d  Total: %-5d\n", buy.items[i].buyfood.name, buy.items[i].fquantitiy, buy.items[i].fprice);
+    for (int i = 0; i <= buy->carttop; i++) {
+        if (buy->items[i].fquantitiy > 0) {
+            printf("Food    : %-15s  Quantity: %-5d  Total: %-5d\n", buy->items[i].buyfood.name, buy->items[i].fquantitiy, buy->items[i].fprice);
         }
-        if (buy.items[i].bquantitiy > 0) {
-            printf("Drink   : %-15s  Quantity: %-5d  Total: %-5d\n", buy.items[i].buydrink.name, buy.items[i].bquantitiy, buy.items[i].bprice);
+        if (buy->items[i].bquantitiy > 0) {
+            printf("Drink   : %-15s  Quantity: %-5d  Total: %-5d\n", buy->items[i].buydrink.name, buy->items[i].bquantitiy, buy->items[i].bprice);
         }
     }
     printf("===================================================================\n");
@@ -1037,7 +1037,7 @@ void deletebyname(struct cart *buy) {
     }
 }
 
-void foodModification(struct food snack[], struct beverage drink[], struct cart buy){
+void foodModification(struct food snack[], struct beverage drink[], struct cart *buy){
 
     int choice = 0;
     int j;
@@ -1088,7 +1088,7 @@ void foodModification(struct food snack[], struct beverage drink[], struct cart 
     }
 }
 
-void ownerFoodMod(struct food snack[], struct beverage drink[], struct cart buy){
+void ownerFoodMod(struct food snack[], struct beverage drink[], struct cart *buy){
 
     int choice = 0;
     int j;
@@ -1106,11 +1106,11 @@ void ownerFoodMod(struct food snack[], struct beverage drink[], struct cart buy)
         getchar(); 
         switch (choice){
             case 1:
-            buyfood(&buy, snack);
+            buyfood(buy, snack);
             break;
 
             case 2:
-            buybev(&buy, drink);
+            buybev(buy, drink);
             break;
 
             case 3:
@@ -1118,11 +1118,11 @@ void ownerFoodMod(struct food snack[], struct beverage drink[], struct cart buy)
             break;
 
             case 4:
-            changequantity(&buy);
+            changequantity(buy);
             break;
 
             case 5:
-            deletebyname(&buy);
+            deletebyname(buy);
             break;
 
             case 6:
@@ -1385,7 +1385,7 @@ int main(){
                         ownerMovie(movies, &count);
                     }
                     else if (ownerSelection == 3){
-                        foodModification(snack, drink, buy);
+                        foodModification(snack, drink, &buy);
                     }
                     else if (ownerSelection == 4){
                         break;
@@ -1418,7 +1418,7 @@ int main(){
                 }
 
                 else if (choice2 == 2){
-                    ownerFoodMod(snack, drink, buy);
+                    ownerFoodMod(snack, drink, &buy);
                 }
                 else if (choice2 == 3){
                     break;
