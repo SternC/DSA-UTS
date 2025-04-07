@@ -149,6 +149,7 @@ void deleteCinemaLocation(cinLoc **head, cinLoc **tail, int *counterLoc)
         tempLoc = tempLoc->next;
     }
 
+    printf("Please Input The Code!\n");
     printf("Choose Unwanted Cinema: ");
     scanf("%d", &cinemaNum);
     printf("\n");
@@ -288,7 +289,7 @@ void deleteCinemaProvinceAndLocation(cinLoc **head, cinLoc **tail, cinProv **fro
     fclose(cinLocFile);
 }
 
-void chooseCinema(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
+void chooseCinema(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back, char *province, char *location)
 {
     cinProv *nodeProv, *tempProv;
     cinLoc *nodeLoc, *tempLoc;
@@ -352,10 +353,11 @@ void chooseCinema(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
         tempProv = tempProv->next;
     }
 
+    printf("\nPlease Input The Code!\n");
     printf("Choose Your Province: ");
     scanf("%d", &userProv);
     printf("\n");
-
+    strcpy(province, tempProv->province);
     for (int i = 0; i < counterLoc; i++)
     {
         if (tempLoc->code == userProv)
@@ -364,9 +366,19 @@ void chooseCinema(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
         }
         tempLoc = tempLoc->next;
     }
+
+    printf("\nPlease Input The Code!\n");
     printf("Choose Your Cinema: ");
     scanf("%d", &userCinema);
     printf("\n");
+
+    tempLoc = *head;
+    while (tempLoc->code != userProv || tempLoc->num != userCinema)
+    {
+        tempLoc = tempLoc->next;
+    }
+
+    strcpy(location, tempLoc->cinema);
 }
 
 void owner(cinLoc **head, cinLoc **tail, cinProv **front, cinProv **back)
@@ -491,6 +503,8 @@ int main()
     int login, attempt = 0;
     char correctUsername[] = {"admin"}, inputtedUsername[51];
     char correctPassword[] = {"admin"}, inputtedPassword[51];
+    char userProvince[51];
+    char userLocation[51];
     cinLoc *head, *tail;
     cinProv *front, *back;
 
@@ -505,7 +519,9 @@ int main()
 
     if (login == 1)
     {
-        chooseCinema(&head, &tail, &front, &back);
+        chooseCinema(&head, &tail, &front, &back, userProvince, userLocation);
+        printf("You Choose %s Province\n", userProvince);
+        printf("You Choose %s Cinema\n", userLocation);
     }
     else if (login == 2)
     {
