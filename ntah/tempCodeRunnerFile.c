@@ -1,17 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <malloc.h>
-
-typedef struct Movie {
-    char movieName[50];
-    char genre[50];
-    char director[50];
-    int duration;
-    char age[10];
-    struct Movie *prev, *next;
-}Movie;
-
 void loadMovies(Movie **head, Movie **tail) {
     FILE *fp = fopen("movie.txt", "r");
     if (!fp) {
@@ -190,63 +176,15 @@ void searchMovie(Movie *head) {
         printf("\nMovie is not found!\n");
 }
 
-void deleteNodes(Movie *head){
-    if(head == NULL){
-        return;
-    }
-
-    Movie *ptr = head->next;
-    while (ptr != head){
-        Movie *trash = ptr;
-        ptr = ptr->next;
+void deleteNodes(Movie **tail, Movie *head)
+{
+    Movie *trash = *tail;
+    while (trash != NULL)
+    {
+        *tail = trash->prev;
+        head->prev = *tail;
+        trash->prev = trash->next = NULL;
         free(trash);
+        trash = *tail;
     }
-    free(head);
-}
-
-int main() {
-    Movie *head, *tail;
-    head = tail = NULL;
-    int choose, menu, list, index;
-    loadMovies(&head, &tail);
-
-    while (choose != 1 && choose != 2) {
-        printf("\nOwner (1) or User (2): ");
-        scanf("%d", &choose);
-        getchar();
-
-        if (choose == 1) {
-            while (menu != 3) {
-                printf("\n1. Add Movie\n2. Remove Movie\n3. Exit\nChoose: ");
-                scanf("%d", &menu);
-                getchar();
-
-                if (menu == 1) {
-                    addMovie(head, &tail);
-                } else if (menu == 2) {
-                    viewMovies(head, index);
-                    removeMovie(&head, &tail, &index);
-                }
-            }
-            deleteNodes(head);
-            printf("Thank you! We appreciate your choice.\n");
-        } else if (choose == 2) {
-            while (list != 3) {
-                printf("\n1. View All Movies\n2. Search Movie\n3. Exit\nChoose: ");
-                scanf("%d", &list);
-                getchar();
-
-                if (list == 1) {
-                    viewMovies(head, index);
-                } else if (list == 2) {
-                    searchMovie(head);
-                }
-            }
-            deleteNodes(head);
-            printf("Thank you! We appreciate your choice.\n");
-        }
-    }
-    deleteNodes(head);
-    printf("\nThank you for using our feature. Have a good day!\n");
-    return 0;
 }

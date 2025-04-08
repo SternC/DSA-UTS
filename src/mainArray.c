@@ -1099,7 +1099,7 @@ void foodModification(struct food snack[], struct beverage drink[], struct cart 
     }
 }
 
-void ownerFoodMod(struct food snack[], struct beverage drink[], struct cart *buy){
+void userFood(struct food snack[], struct beverage drink[], struct cart *buy){
 
     int choice = 0;
     int j;
@@ -1482,7 +1482,7 @@ int main(){
                 }
 
                 else if (choice2 == 2){
-                    ownerFoodMod(snack, drink, &buy);
+                    userFood(snack, drink, &buy);
                 }
                 else if (choice2 == 3){
                     printf("Thank you for your order!\n");

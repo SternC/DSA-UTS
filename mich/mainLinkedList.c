@@ -581,15 +581,8 @@ void buybev(struct cart *buy, struct beverage *drink_head) {
 }
 
 void buyfood(struct cart *buy, struct food *food_head) {
-    int choice;
-    printf("Choice:\n");
-    printf("1. Food\n");
-    printf("2. Beverage\n");
-    printf("Choice: ");
-    scanf("%d", &choice);
-    getchar(); 
+        int choice;
 
-    if (choice == 1) {
         FILE *pick = NULL;
         printf("Category:\n");
         printf("1. Popcorn\n");
@@ -723,7 +716,6 @@ void buyfood(struct cart *buy, struct food *food_head) {
 
         printf("'%s' added to cart successfully.\n", snack_name);
     }
-}
 
 void seecart(struct cart buy) {
     if (buy.carttop == -1 || buy.items == NULL) {

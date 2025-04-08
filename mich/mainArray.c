@@ -3,13 +3,13 @@
 #include <string.h>
 
 //owner
-struct food {
+struct food{
     char name[50];
     int stock;
     int price;
 };
 
-struct beverage {
+struct beverage{
     char name[50];
     int stock;
     int price;
