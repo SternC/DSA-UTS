@@ -790,7 +790,7 @@ void userMovie(Movie **mov_head, Movie **mov_tail, char *selectedMovie){
 
 // OWNER FOOD FUNCTION
 
-void addfood(struct food **food_head, int n) {
+void addFood(struct food **food_head, int n) {
     int choice;
     FILE *pick = NULL;
     printf("Category:\n");
@@ -845,7 +845,7 @@ void addfood(struct food **food_head, int n) {
     fclose(pick);
 }
 
-void addbev(struct beverage **drink_head, int n) {
+void addBev(struct beverage **drink_head, int n) {
     FILE *beverage = fopen("beverage.txt", "a");
     if (beverage == NULL) {
         printf("Error.\n");
@@ -1642,23 +1642,23 @@ void ownerFood(struct food **food_head, struct beverage **drink_head, struct car
                 printf("Enter number of food: ");
                 scanf("%d", &j);
                 getchar(); 
-                addfood(food_head, j);
-                break;
+                addFood(food_head, j);
+                return;
             case 2:
                 printf("Enter number of beverage: ");
                 scanf("%d", &j);
                 getchar();
-                addbev(drink_head, j);
-                break;
+                addBev(drink_head, j);
+                return;
             case 3:
                 printInventory(*food_head, *drink_head);
-                break;
+                return;
             case 4:
                 changePriceStock(*food_head, *drink_head, 0);
-                break;
+                return;
             case 5:
                 checkInventory(*food_head, *drink_head);
-                break;
+                return;
             case 6:
                 printf("Exiting program.\n");
 
