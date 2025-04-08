@@ -618,7 +618,7 @@ void changePriceStock(struct food snack[], struct beverage drink[], int n) {
                     printf("Input the new price: ");
                     scanf(" %d", &newPrice);
                     getchar(); 
-                    snack[i].price = newprice;
+                    snack[i].price = newPrice;
                 } else if (choice == 2) {
                     printf("Input added stock quantity: ");
                     scanf(" %d", &newStock);
@@ -677,7 +677,7 @@ void changePriceStock(struct food snack[], struct beverage drink[], int n) {
                     printf("Input the new price: ");
                     scanf(" %d", &newPrice);
                     getchar(); 
-                    drink[i].price = newprice;
+                    drink[i].price = newPrice;
                 } else if (choice == 2) {
                     printf("Input new stock quantity: ");
                     scanf(" %d", &newStock);
