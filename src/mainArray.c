@@ -1504,6 +1504,13 @@ int main(){
                 }
             }
         }
+        else if (choice == 3){
+            printf("Thank you for using our service!\n");
+            break;
+        }
+        else{
+            printf("Invalid choice. Please try again.\n");
+        }
     }
     return 0;
 }
