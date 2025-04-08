@@ -1358,11 +1358,12 @@ void invoice(struct cart *buy, char *selectedMovie, char *cinProvChoice, char *c
         printf("Error opening invoice file.\n");
         return;
     }
-    fprintf(invoice, "Invoice\n");
+    fprintf(invoice, "========================================\n");
+    fprintf(invoice, "               INVOICE                  \n");
     fprintf(invoice, "========================================\n");
     fprintf(invoice, "Movie: %s\n", selectedMovie);
     fprintf(invoice, "Location: %s, %s\n", cinProvChoice, cinLocChoice);
-    fprintf(invoice, "Food Price: Rp%d\n", totalFoodPrice);
+    fprintf(invoice, "Food & Beverage Price: Rp%d\n", totalFoodPrice);
     fprintf(invoice, "Ticket Price: Rp70000\n");
     fprintf(invoice, "Total Price: Rp%d\n", totalFoodPrice + 70000);
     fprintf(invoice, "========================================\n");

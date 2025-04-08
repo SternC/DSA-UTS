@@ -1338,8 +1338,8 @@ void buyBev(struct cart **buy, struct beverage *drink_head) {
 }
 
 void buyFood(struct cart **buy, struct food *food_head) {
-    int choice;
 
+    int choice;
         FILE *pick = NULL;
         printf("Category:\n");
         printf("1. Popcorn\n");
@@ -1352,21 +1352,11 @@ void buyFood(struct cart **buy, struct food *food_head) {
 
         char *file = NULL;
         switch (choice) {
-            case 1: 
-                file = "popcorn.txt"; 
-                break;
-            case 2: 
-                file = "fritters.txt"; 
-                break;
-            case 3: 
-                file = "lightmeal.txt"; 
-                break;
-            case 4: 
-                file = "bakery.txt"; 
-                break;
-            default: 
-                printf("Invalid choice.\n"); 
-                return;
+            case 1: file = "popcorn.txt"; break;
+            case 2: file = "fritters.txt"; break;
+            case 3: file = "lightmeal.txt"; break;
+            case 4: file = "bakery.txt"; break;
+            default: printf("Invalid choice.\n"); return;
         }
 
         pick = fopen(file, "r");
@@ -1375,92 +1365,98 @@ void buyFood(struct cart **buy, struct food *food_head) {
             return;
         }
 
+        struct food *head = NULL;
         while (!feof(pick)) {
-            struct food *show = (struct food *)malloc(sizeof(struct food));
-            if (fscanf(pick, "%[^#]#%d#%d\n", show->name, &show->stock, &show->price) == 3) {
-                show->next = food_head;
-                food_head = show;
-            } 
+            struct food *new_food = malloc(sizeof(struct food));
+            if (fscanf(pick, "%[^#]#%d#%d\n", new_food->name, &new_food->stock, &new_food->price) == 3) {
+                new_food->next = head;
+                head = new_food;
+            } else {
+                free(new_food);
+            }
         }
         fclose(pick);
+
+        int total = 0;
+        struct food *counter = head;
+        while (counter != NULL) {
+            total++;
+            counter = counter->next;
+        }
+
+       
+        struct food *show = head;
+        int id = total;
 
         printf("========================================\n");
         printf("                  Menu                  \n");
         printf("========================================\n");
-        struct food *temp = food_head;
-        while (temp != NULL) {
-            printf("Food    : %s\n", temp->name);
-            printf("Price   : %d\n", temp->price);
-            printf("================================\n");
-            temp = temp->next;
-        }
-        int quan;
-        int food_id;
 
+        while (show != NULL) {
+            printf("%d. Name    : %-20s\n", id, show->name);
+            printf("   Price   : %-18d\n", show->price);
+            printf("========================================\n");
+            show = show->next;
+            id--;
+        }
+
+        int quan, food_id;
         printf("Enter food ID: ");
         scanf("%d", &food_id);
         getchar(); 
         printf("Enter quantity: ");
-      
         if (scanf("%d", &quan) != 1 || quan <= 0) {
             printf("Invalid quantity entered.\n");
             return;
         }
         getchar(); 
-        FILE *food_file = fopen(file, "r");
-        if (food_file == NULL) {
-            printf("Error.");
-            return;
+
+      
+        struct food *selected = head;
+        int current_id = total;
+        while (selected != NULL && current_id != food_id) {
+            selected = selected->next;
+            current_id--;
         }
 
-        char snack_name[50];
-        int snack_stock, snack_price;
-        int snack_id = 1, found = 0;
-
-        while (fscanf(food_file, "%[^#]#%d#%d\n", snack_name, &snack_stock, &snack_price) == 3) {
-            if (snack_id == food_id) {
-                found = 1;
-                if (snack_stock < quan) {
-                    printf("Sorry, we only have %d in stock.\n", snack_stock);
-                    fclose(food_file);
-                    return;
-                }
-                break;
-            }
-            snack_id++;
-        }
-        fclose(food_file);
-
-        if (!found) {
+        if (selected == NULL) {
             printf("Invalid food ID.\n");
             return;
         }
 
+        if (selected->stock < quan) {
+            printf("Sorry, we only have %d in stock.\n", selected->stock);
+            return;
+        }
+
+      
         struct food *temp_food = food_head;
         while (temp_food != NULL) {
-            if (strcmp(temp_food->name, snack_name) == 0) {
+            if (strcmp(temp_food->name, selected->name) == 0) {
                 temp_food->stock -= quan;
                 break;
             }
             temp_food = temp_food->next;
         }
 
+     
         struct item *new_food = malloc(sizeof(struct item));
         if (!new_food) {
             printf("Memory allocation failed.\n");
             return;
         }
 
-        strcpy(new_food->buyFood.name, snack_name);
+        strcpy(new_food->buyFood.name, selected->name);
         new_food->fQuantity = quan;
-        new_food->fPrice = quan * snack_price;
-        new_food->next = (*buy)->items; 
+        new_food->fPrice = quan * selected->price;
+        new_food->next = (*buy)->items;
         (*buy)->items = new_food;
         (*buy)->cartTop++;
 
+       
         FILE *food_write = fopen(file, "w");
         if (!food_write) {
-            printf("Error.");
+            printf("Error.\n");
             return;
         }
 
@@ -1471,31 +1467,32 @@ void buyFood(struct cart **buy, struct food *food_head) {
         }
         fclose(food_write);
 
-        printf("'%s' added to cart successfully.\n", snack_name);
+        printf("'%s' added to cart successfully.\n", selected->name);
     }
 
-void seeCart(struct cart **buy) {
-    if ((*buy)->cartTop == -1 || (*buy)->items == NULL) {
-        printf("\nCart is empty\n");
-        return;
-    }
-
-    printf("===================================================================\n");
-    printf("                               Cart                                \n");
-    printf("===================================================================\n");
-
-    struct item *temp = (*buy)->items;
-    while (temp != NULL) {
-        if (temp->fQuantity > 0) {
-            printf("Food    : %-15s  Quantity: %-5d  Total: %-5d\n", temp->buyFood.name, temp->fQuantity, temp->fPrice);
+    void seeCart(struct cart *buy) {
+        if (buy->cartTop == -1 || buy->items == NULL) {
+            printf("\nCart is empty\n");
+            return;
         }
-        if (temp->bQuantity > 0) {
-            printf("Beverage: %-15s  Quantity: %-5d  Total: %-5d\n", temp->buyDrink.name, temp->bQuantity, temp->bPrice);
+    
+        printf("===================================================================\n");
+        printf("                               Cart                                \n");
+        printf("===================================================================\n");
+    
+        struct item *temp = buy->items;
+        while (temp != NULL) {
+            if (temp->fQuantity > 0) {
+                printf("Food    : %-15s  Quantity: %-5d  Total: %-5d\n", temp->buyFood.name, temp->fQuantity, temp->fPrice);
+            }
+            if (temp->bQuantity > 0) {
+                printf("Beverage: %-15s  Quantity: %-5d  Total: %-5d\n", temp->buyDrink.name, temp->bQuantity, temp->bPrice);
+            }
+            temp = temp->next;
         }
-        temp = temp->next;
+        printf("===================================================================\n");
     }
-    printf("===================================================================\n");
-}
+    
 
 void changeQuantity(struct cart **buy) {
     int newquan, choice;
@@ -1682,6 +1679,7 @@ void ownerFood(struct food **food_head, struct beverage **drink_head, struct car
                     (*buy).items = (*buy).items->next;
                     free(trash);
                 }
+                return;
             default:
                 printf("Invalid choice.\n");
         }
@@ -1712,7 +1710,7 @@ void userFood(struct food **food_head, struct beverage **drink_head, struct cart
             break;
 
             case 3:
-            seeCart(&buy);
+            seeCart(buy);
             break;
 
             case 4:
@@ -1736,7 +1734,27 @@ void userFood(struct food **food_head, struct beverage **drink_head, struct cart
     
 }
 
+void invoice(struct cart *buy, char *selectedMovie, char *cinProvChoice, char *cinLocChoice, int totalFoodPrice) {
+    FILE *invoice = fopen("invoice.txt", "w");
+    if (invoice == NULL) {
+        printf("Error opening invoice file.\n");
+        return;
+    }
 
+    fprintf(invoice, "========================================\n");
+    fprintf(invoice, "               INVOICE                  \n");
+    fprintf(invoice, "========================================\n");
+    fprintf(invoice, "Movie: %s\n", selectedMovie);
+    fprintf(invoice, "Location: %s, %s\n", cinProvChoice, cinLocChoice);
+    fprintf(invoice, "Ticket Price: Rp70000\n");
+    fprintf(invoice, "Food & Beverage Price: Rp%d\n", totalFoodPrice);
+    fprintf(invoice, "Total Price: Rp%d\n", totalFoodPrice + 70000);
+    fprintf(invoice, "========================================\n");
+    fprintf(invoice, "DISCLAIMER: Any movie ticket / food you bought cannot be returned or refunded.\nTicket should be claimed at the cinema cashier.\n");
+    fprintf(invoice, "Food should be claimed at the food cashier.\n");
+    fprintf(invoice, "How to claim your ticket & food: \n1. Go to the Cinema that you selected\n2. Go to the ticket cashier to select your movie schedule and seating then claim your ticket\n3. Go to the food cashier to claim your food\n");
+    fclose(invoice);
+}
 
 int main(){
 
@@ -1858,17 +1876,22 @@ int main(){
                 }
                 else if (choice2 == 3){
                     printf("Thank you for your order!\n");
-                    // printf("Selected movie: %s\n", selectedMovie);
+                    printf("Selected movie: %s\n", selectedMovie);
                     printf("Selected food: \n");
-                    // seeCart(&buy);
+                    seeCart(&buy);
                     printf("Ticket Price: Rp70000\n");
-                    // for (int i = 0; i <= buy.cartTop; i++) {
-                  //      totalFoodPrice += buy.items[i].fPrice + buy.items[i].bPrice;
-                    //}
-                   // printf("Food Price: Rp%d\n", totalFoodPrice);
-                   // printf("Total Price: Rp%d\n", totalFoodPrice + 70000);
+
+                    int totalFoodPrice = 0;
+                    struct item *currentItem = buy.items;
+                    while (currentItem != NULL) {
+                        totalFoodPrice += currentItem->fPrice + currentItem->bPrice;
+                        currentItem = currentItem->next;
+                    }
+
+                    printf("Food Price: Rp%d\n", totalFoodPrice);
+                    printf("Total Price: Rp%d\n", totalFoodPrice + 70000);
                     printf("Invoice will be printed. Please check invoice.txt\n");
-                    // invoice(&buy, selectedMovie, cinProvChoice, cinLocChoice, totalFoodPrice);
+                    invoice(&buy, selectedMovie, cinProvChoice, cinLocChoice, totalFoodPrice);
                     printf("Enjoy your movie!\n");
                 }
                 else if (choice2 == 4){

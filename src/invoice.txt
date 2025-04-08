@@ -1,7 +1,16 @@
-Invoice
 ========================================
-Movie: LEGENDS OF THE CONDOR HEROES:THE GALLANTS
+               INVOICE                  
+========================================
+Movie: KOMANG
 Location: JABODETABEK, AEON MALL BSD CITY XXI
-Food Price: Rp50000
 Ticket Price: Rp70000
-Total Price: Rp120000
+Food & Beverage Price: Rp30000
+Total Price: Rp100000
+========================================
+DISCLAIMER: Any movie ticket / food you bought cannot be returned or refunded.
+Ticket should be claimed at the cinema cashier.
+Food should be claimed at the food cashier.
+How to claim your ticket & food: 
+1. Go to the Cinema that you selected
+2. Go to the ticket cashier to select your movie schedule and seating then claim your ticket
+3. Go to the food cashier to claim your food
