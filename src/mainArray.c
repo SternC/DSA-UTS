@@ -423,7 +423,7 @@ struct cart{
 };
 
     void buybev(struct cart *buy, struct beverage drink[] ) {
-        int i, n = 0, id, quan;  // Start with n=0
+        int i, n = 0, id, quan;  
         FILE *beverage = fopen("beverage.txt", "r");
         if (beverage == NULL) {
             printf("Error opening beverage file.\n");
@@ -781,4 +781,3 @@ int main() {
 
     return 0;
 }
-
