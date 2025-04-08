@@ -1,0 +1,7 @@
+Invoice
+========================================
+Movie: LEGENDS OF THE CONDOR HEROES:THE GALLANTS
+Location: JABODETABEK, AEON MALL BSD CITY XXI
+Food Price: Rp50000
+Ticket Price: Rp70000
+Total Price: Rp120000

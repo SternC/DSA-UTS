@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_CART 100
+
 void clean() {
     #ifdef _WIN32
         system("cls");  // Windows
@@ -22,7 +24,7 @@ struct beverage {
     int price;
 };
 
-typedef struct {
+typedef struct{
     char movieName[50];
     char genre[50];
     char director[50];
@@ -330,10 +332,10 @@ void owner()
     }
 }
 
-void chooseCinema()
+void chooseCinema(char *provChoice, char *locChoice)
 {
-    char userProv[101], userCinema[101];
-    int counterProv, counterLoc, counter;
+    int userProv, userCinema;
+    int counterProv, counterLoc;
 
     char provinceAndCode[100][2][101];
     char locationAndCodeAndNum[100][3][101];
@@ -343,15 +345,13 @@ void chooseCinema()
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "r");
 
-    while (!feof(cinProvFile))
+    while (fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]) == 2)
     {
-        fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]);
         counterProv++;
     }
 
-    while (!feof(cinLocFile))
+    while (fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]) == 3)
     {
-        fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]);
         counterLoc++;
     }
 
@@ -364,19 +364,31 @@ void chooseCinema()
     }
 
     printf("Choose Your Province: ");
-    scanf(" %s", userProv);
+    scanf("%d", &userProv);
     printf("\n");
+
+    char chosenProvCode[101];
+    strcpy(chosenProvCode, provinceAndCode[userProv-1][1]);
+
+    int availableCinemaIndex[100];
+    int totalAvailable = 0;
 
     for (int i = 0; i < counterLoc; i++)
     {
-        if (strcmp(locationAndCodeAndNum[i][1], userProv) == 0)
+        if (strcmp(locationAndCodeAndNum[i][1], chosenProvCode) == 0)
         {
-            printf("%d. %s\n", i + 1, locationAndCodeAndNum[i][0]);
+            printf("%d. %s\n", totalAvailable + 1, locationAndCodeAndNum[i][0]);
+            availableCinemaIndex[totalAvailable] = i;
+            totalAvailable++;
         }
     }
+
     printf("Choose Your Cinema: ");
-    scanf(" %s", userCinema);
+    scanf("%d", &userCinema);
     printf("\n");
+
+    strcpy(provChoice, provinceAndCode[userProv-1][0]);
+    strcpy(locChoice, locationAndCodeAndNum[availableCinemaIndex[userCinema-1]][0]);
 }
 
 void addfood(struct food snack[], int n) {
@@ -770,7 +782,6 @@ void printinventory(struct food snack[], struct beverage drink[]) {
 }
 
 //User
-#define MAX_CART 100
 
 struct item{
    struct food buyfood;
@@ -1292,14 +1303,35 @@ void ownerMovie(Movie movies[], int *count){
     }
 }
 
-void userMovie(Movie movies[], int *count){
+void selectMovie(Movie movies[], int *count, char *selectedMovie) {
+
+    viewMovies(movies, count);
+
+    if (*count == 0) {
+        printf("Movie List is Empty! Please add a movie first.\n");
+        return;
+    }
+
+    int selectNum;
+    printf("\nInput Movie Number to Select: ");
+    scanf(" %d", &selectNum);
+
+    if (selectNum < 1 || selectNum > *count) {
+        printf("Invalid movie number!\n");
+        return;
+    }
+
+    printf("You have selected: %s\n\n\n", movies[selectNum - 1].movieName);
+    strcpy(selectedMovie, movies[selectNum - 1].movieName);
+}
+
+void userMovie(Movie movies[], int *count, char *selectedMovie){
     
     int choose = 0;
 
     while (choose != 3){
-        printf("\n1. View All Movies\n2. Search Movie\n3. Exit\nChoose: ");
+        printf("\n1. View All Movies\n2. Search Movie\n3. Select a Movie\n4. Exit\nChoose: ");
         scanf(" %d", &choose);
-        getchar();
 
         if (choose == 1) {
             viewMovies(movies, count);
@@ -1308,10 +1340,36 @@ void userMovie(Movie movies[], int *count){
             searchMovie(movies, count);
         }
         else if (choose == 3){
+            selectMovie(movies, count, selectedMovie);
+        }
+        else if (choose == 4){
             printf("Thank you! We appreciate your choice.\n");
             break;
         }
+        else {
+            printf("Invalid choice. Please try again.\n");
+        }
     }
+}
+
+void invoice(struct cart *buy, char *selectedMovie, char *cinProvChoice, char *cinLocChoice, int totalFoodPrice){
+    FILE *invoice = fopen("invoice.txt", "w");
+    if (invoice == NULL) {
+        printf("Error opening invoice file.\n");
+        return;
+    }
+    fprintf(invoice, "Invoice\n");
+    fprintf(invoice, "========================================\n");
+    fprintf(invoice, "Movie: %s\n", selectedMovie);
+    fprintf(invoice, "Location: %s, %s\n", cinProvChoice, cinLocChoice);
+    fprintf(invoice, "Food Price: Rp%d\n", totalFoodPrice);
+    fprintf(invoice, "Ticket Price: Rp70000\n");
+    fprintf(invoice, "Total Price: Rp%d\n", totalFoodPrice + 70000);
+    fprintf(invoice, "========================================\n");
+    fprintf(invoice, "DISCLAIMER: Any movie ticket / food you bought cannot be returned or refunded.\nTicket should be claimed at the cinema cashier.\n");
+    fprintf(invoice, "Food should be claimed at the food cashier.\n");
+    fprintf(invoice, "How to claim your ticket & food: \n1. Go to the Cinema that you selected\n2. Go to the ticket cashier to select your movie schedule and seating then claim your ticket\n3. Go to the food cashier to claim your food\n");
+    fclose(invoice);
 }
 
 
@@ -1320,12 +1378,16 @@ int main(){
     // Movies
     Movie movies[100];
     int count;
+    char selectedMovie[50];
     loadMovies(movies, &count);
 
     // Food & Beverages
     struct food snack[100];
     struct beverage drink[100];
-    struct cart buy = {.carttop = -1}; 
+    struct cart buy = {.carttop = -1};
+    int totalFoodPrice = 0;
+
+    char cinProvChoice[100], cinLocChoice[100];
 
     int choice = 0;
     int attempt = 0;
@@ -1400,27 +1462,44 @@ int main(){
         }
         else if (choice == 2){
             printf("Please select your location\n");
-            chooseCinema();
+            chooseCinema(cinProvChoice, cinLocChoice);
 
             choice2 = 0;
 
             while (choice2 != 3){
-                // Reserved for Cinema Location Printing
+                printf("Province: %s | Location: %s\n", cinProvChoice, cinLocChoice);
+                printf("Selected movie: %s\n", selectedMovie);
                 printf("Select your category: \n");
                 printf("1. Select movie\n");
                 printf("2. Order food\n");
-                printf("3. Exit\n");
+                printf("3. Check out\n");
+                printf("4. Exit\n");
                 printf("Selection: ");
                 scanf(" %d", &choice2);
 
                 if (choice2 == 1){
-                    userMovie(movies, &count);
+                    userMovie(movies, &count, selectedMovie);
                 }
 
                 else if (choice2 == 2){
                     ownerFoodMod(snack, drink, &buy);
                 }
                 else if (choice2 == 3){
+                    printf("Thank you for your order!\n");
+                    printf("Selected movie: %s\n", selectedMovie);
+                    printf("Selected food: \n");
+                    seecart(&buy);
+                    printf("Ticket Price: Rp70000\n");
+                    for (int i = 0; i <= buy.carttop; i++) {
+                        totalFoodPrice += buy.items[i].fprice + buy.items[i].bprice;
+                    }
+                    printf("Food Price: Rp%d\n", totalFoodPrice);
+                    printf("Total Price: Rp%d\n", totalFoodPrice + 70000);
+                    printf("Invoice will be printed. Please check invoice.txt\n");
+                    invoice(&buy, selectedMovie, cinProvChoice, cinLocChoice, totalFoodPrice);
+                    printf("Enjoy your movie!\n");
+                }
+                else if (choice2 == 4){
                     break;
                 }
             }
