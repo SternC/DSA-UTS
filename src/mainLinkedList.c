@@ -1904,6 +1904,23 @@ int main(){
             deleteLocationNodes(&cin_head, &cin_tail);
             deleteProvinceNodes(&cin_front, &cin_back);
             deleteNodes(mov_head);
+            while (food_head != NULL) {
+                struct food *trash = food_head;
+                food_head = food_head->next;
+                free(trash);
+            }
+
+            while (drink_head != NULL) {
+                struct beverage *trash = drink_head;
+                drink_head = drink_head->next;
+                free(trash);
+            }
+
+            while (buy.items != NULL) {
+                struct item *trash = buy.items;
+                buy.items = buy.items->next;
+                free(trash);
+            }
             break;
         }
         else{
