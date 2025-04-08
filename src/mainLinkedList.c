@@ -995,7 +995,7 @@ void checkInventory(struct food *food_head, struct beverage *drink_head) {
     
 
 void changePriceStock(struct food *food_head, struct beverage *drink_head, int n) {
-    int newprice, newstock, choice;
+    int newPrice, newStock, choice;
     char merk[100];
     printf("Choice:\n");
     printf("1. Food\n");
@@ -1048,14 +1048,14 @@ void changePriceStock(struct food *food_head, struct beverage *drink_head, int n
                 getchar(); 
                 if (choice == 1) {
                     printf("Input the new price: ");
-                    scanf("%d", &newprice);
+                    scanf("%d", &newPrice);
                     getchar(); 
-                    snack->price = newprice;
+                    snack->price = newPrice;
                 } else if (choice == 2) {
                     printf("Input added stock quantity: ");
-                    scanf("%d", &newstock);
+                    scanf("%d", &newStock);
                     getchar(); 
-                    snack->stock += newstock;
+                    snack->stock += newStock;
                 }
 
                 pick = fopen(file, "w");
@@ -1091,14 +1091,14 @@ void changePriceStock(struct food *food_head, struct beverage *drink_head, int n
                 getchar(); 
                 if (choice == 1) {
                     printf("Input the new price: ");
-                    scanf("%d", &newprice);
+                    scanf("%d", &newPrice);
                     getchar();
-                    drink->price = newprice;
+                    drink->price = newPrice;
                 } else if (choice == 2) {
                     printf("Input new stock quantity: ");
-                    scanf("%d", &newstock);
+                    scanf("%d", &newStock);
                     getchar(); 
-                    drink->stock += newstock;
+                    drink->stock += newStock;
                 }
 
                 FILE *beverage = fopen("beverage.txt", "w");
