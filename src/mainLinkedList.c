@@ -525,8 +525,13 @@ void owner(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cinProv **
             break;
 
         default:
+            deleteLocationNodes(cin_head, cin_tail);
+            deleteProvinceNodes(cin_front, cin_back);
             return;
         }
+
+        deleteLocationNodes(cin_head, cin_tail);
+        deleteProvinceNodes(cin_front, cin_back);
     }
 }
 
