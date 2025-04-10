@@ -802,7 +802,7 @@ void selectMovie(Movie *mov_head, Movie **mov_tail, char *selectedMovie)
         printf("Movie List is Empty! Please add a movie first.\n");
         return;
     }
-    printf("\nInput Number Movie: ");
+    printf("\nInput a movie number to select a movie: ");
     scanf("%d", &movieNum);
     int currentIndex = 1;
 
@@ -813,7 +813,7 @@ void selectMovie(Movie *mov_head, Movie **mov_tail, char *selectedMovie)
     }
     if (currentIndex != movieNum)
     {
-        printf("Movie not found at that index!\n");
+        printf("Invalid movie number!\n");
         return;
     }
 

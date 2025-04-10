@@ -1480,7 +1480,7 @@ void selectMovie(Movie movies[], int *count, char *selectedMovie)
     }
 
     int selectNum;
-    printf("\nInput Movie Number to Select: ");
+    printf("\nInput a movie number to select a movie: ");
     scanf(" %d", &selectNum);
 
     if (selectNum < 1 || selectNum > *count)
