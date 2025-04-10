@@ -1685,27 +1685,27 @@ void ownerFood(struct food **food_head, struct beverage **drink_head, struct car
             case 5:
                 checkInventory(*food_head, *drink_head);
                 return;
-            case 6:
+                case 6:
                 printf("Exiting program.\n");
-
+            
                 while (*food_head != NULL) {
                     struct food *trash = *food_head;
                     *food_head = (*food_head)->next;
                     free(trash);
                 }
-              
+            
                 while (*drink_head != NULL) {
                     struct beverage *trash = *drink_head;
                     *drink_head = (*drink_head)->next;
                     free(trash);
                 }
-                
-
-                while (buy->items != NULL) {
+            
+                while ((*buy).items != NULL) {
                     struct item *trash = (*buy).items;
                     (*buy).items = (*buy).items->next;
                     free(trash);
                 }
+            
                 return;
             
                 default:
