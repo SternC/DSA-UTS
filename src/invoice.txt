@@ -1,11 +1,11 @@
 ========================================
                INVOICE                  
 ========================================
-Movie: KOMANG
+Movie: MICKEY 17
 Location: JABODETABEK, AEON MALL BSD CITY XXI
 Ticket Price: Rp70000
-Food & Beverage Price: Rp30000
-Total Price: Rp100000
+Food & Beverage Price: Rp80000
+Total Price: Rp150000
 ========================================
 DISCLAIMER: Any movie ticket / food you bought cannot be returned or refunded.
 Ticket should be claimed at the cinema cashier.
