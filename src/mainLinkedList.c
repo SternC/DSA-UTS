@@ -1492,7 +1492,6 @@ void buyBev(struct cart *buy, struct beverage *drink_head)
 
     selected->stock -= quan;
 
-    // Stack Push
     struct item *new_drink = (struct item *)malloc(sizeof(struct item));
     new_drink->fQuantity = 0;
     new_drink->fPrice = 0;
@@ -1502,7 +1501,7 @@ void buyBev(struct cart *buy, struct beverage *drink_head)
     new_drink->bQuantity = quan;
     new_drink->bPrice = quan * selected->price;
 
-    new_drink->next = buy->items; // PUSH to stack
+    new_drink->next = buy->items;
     buy->items = new_drink;
     buy->cartTop++;
 
@@ -1638,7 +1637,6 @@ void buyFood(struct cart *buy, struct food *food_head)
 
     selected->stock -= quan;
 
-    // Stack Push
     struct item *new_food = (struct item *)malloc(sizeof(struct item));
     new_food->bQuantity = 0;
     new_food->bPrice = 0;
@@ -1648,7 +1646,7 @@ void buyFood(struct cart *buy, struct food *food_head)
     new_food->fQuantity = quan;
     new_food->fPrice = quan * selected->price;
 
-    new_food->next = buy->items; // PUSH to stack
+    new_food->next = buy->items;
     buy->items = new_food;
     buy->cartTop++;
 
