@@ -1,2 +1,3 @@
 chocoball#18#30000
 chip#20#10000
+friedchips#20#30000
