@@ -250,7 +250,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
     fclose(cinLocFile);
 }
 
-void owner()
+void ownerCinema()
 {
     int userActivity;
     int counterProv, counterLoc, counter;
@@ -867,7 +867,7 @@ struct cart
 
 void buyBev(struct cart *buy, struct beverage drink[])
 {
-    int i, n = 0, id, quan; // Start with n=0
+    int i, n = 0, id, quan;
     FILE *beverage = fopen("beverage.txt", "r");
     if (beverage == NULL)
     {
@@ -1082,7 +1082,7 @@ void popCart(struct cart *buy)
 
 void changeQuantity(struct cart *buy)
 {
-    int newquan, choice;
+    int newQuan, choice;
     char merk[100];
     printf("Choice:\n");
     printf("1. Food\n");
@@ -1099,18 +1099,18 @@ void changeQuantity(struct cart *buy)
         if (choice == 1 && strcmp(merk, buy->items[i].buyFood.name) == 0)
         {
             printf("New quantity: ");
-            scanf("%d", &newquan);
-            buy->items[i].fPrice = (buy->items[i].fPrice / buy->items[i].fQuantity) * newquan;
-            buy->items[i].fQuantity = newquan;
+            scanf("%d", &newQuan);
+            buy->items[i].fPrice = (buy->items[i].fPrice / buy->items[i].fQuantity) * newQuan;
+            buy->items[i].fQuantity = newQuan;
             found = 1;
             break;
         }
         else if (choice == 2 && strcmp(merk, buy->items[i].buyDrink.name) == 0)
         {
             printf("New quantity: ");
-            scanf("%d", &newquan);
-            buy->items[i].bPrice = (buy->items[i].bPrice / buy->items[i].bQuantity) * newquan;
-            buy->items[i].bQuantity = newquan;
+            scanf("%d", &newQuan);
+            buy->items[i].bPrice = (buy->items[i].bPrice / buy->items[i].bQuantity) * newQuan;
+            buy->items[i].bQuantity = newQuan;
             found = 1;
             break;
         }
@@ -1422,7 +1422,7 @@ void searchMovie(Movie movies[], int *count)
             }
         }
 
-        if (match)
+        if (match == 1)
         {
             printf("\nMovie Found!\n");
             printf("------------------------------\n");
@@ -1435,7 +1435,7 @@ void searchMovie(Movie movies[], int *count)
             found = 1;
         }
     }
-    if (!found)
+    if (found != 1)
     {
         printf("\nMovie is not found!\n");
     }
@@ -1623,7 +1623,7 @@ int main()
 
                     if (ownerSelection == 1)
                     {
-                        owner();
+                        ownerCinema();
                     }
                     else if (ownerSelection == 2)
                     {

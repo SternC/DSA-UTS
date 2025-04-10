@@ -452,7 +452,7 @@ void chooseCinema(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cin
     }
 }
 
-void owner(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cinProv **cin_back)
+void ownerCinema(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cinProv **cin_back)
 {
     cinProv *nodeProv, *tempProv;
     cinLoc *nodeLoc, *tempLoc;
@@ -2113,7 +2113,7 @@ int main()
 
                     if (ownerSelection == 1)
                     {
-                        owner(&cin_head, &cin_tail, &cin_front, &cin_back);
+                        ownerCinema(&cin_head, &cin_tail, &cin_front, &cin_back);
                     }
                     else if (ownerSelection == 2)
                     {
