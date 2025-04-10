@@ -1,11 +1,11 @@
 ========================================
                INVOICE                  
 ========================================
-Movie: None
+Movie: PETAKA GUNUNG GEDE
 Location: JABODETABEK, AEON MALL BSD CITY XXI
+Food & Beverage Price: Rp0
 Ticket Price: Rp70000
-Food & Beverage Price: Rp60000
-Total Price: Rp130000
+Total Price: Rp70000
 ========================================
 DISCLAIMER: Any movie ticket / food you bought cannot be returned or refunded.
 Ticket should be claimed at the cinema cashier.
