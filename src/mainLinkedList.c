@@ -331,9 +331,7 @@ void chooseCinema(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cin
     cinProv *nodeProv, *tempProv;
     cinLoc *nodeLoc, *tempLoc;
     int userProv, userCinema;
-    int counterProv, counterLoc;
-
-    counterLoc = counterProv = 0;
+    int counterProv = 0, counterLoc = 0;
 
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "r");
@@ -374,49 +372,82 @@ void chooseCinema(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cin
             *cin_tail = nodeLoc;
         }
         (*cin_tail)->next = *cin_head;
-        (*cin_head)->prev = *(cin_tail);
+        (*cin_head)->prev = *cin_tail;
         counterLoc++;
     }
 
     fclose(cinProvFile);
     fclose(cinLocFile);
 
-    tempProv = *cin_front;
-    tempLoc = *cin_head;
-
-    for (int i = 0; i < counterProv; i++)
+    while (1)
     {
-        printf("%d. %s\n", i + 1, tempProv->province);
-        tempProv = tempProv->next;
-    }
-
-    printf("\nPlease Input The Code!\n");
-    printf("Choose Your Province: ");
-    scanf("%d", &userProv);
-    printf("\n");
-    strcpy(province, tempProv->province);
-    for (int i = 0; i < counterLoc; i++)
-    {
-        if (tempLoc->code == userProv)
+        printf("Available Provinces:\n");
+        tempProv = *cin_front;
+        for (int i = 0; i < counterProv; i++)
         {
-            printf("%d. %s\n", i + 1, tempLoc->cinema);
+            printf("%d. %s\n", i + 1, tempProv->province);
+            tempProv = tempProv->next;
         }
-        tempLoc = tempLoc->next;
+
+        printf("\nPlease Input The Code!\n");
+        printf("Choose Your Province: ");
+        scanf("%d", &userProv);
+
+        if (userProv >= 1 && userProv <= counterProv)
+        {
+            tempProv = *cin_front;
+            for (int i = 0; i < userProv - 1; i++)
+            {
+                tempProv = tempProv->next;
+            }
+            strcpy(province, tempProv->province);
+            break;
+        }
+        printf("Invalid Province Code! Please Try Again.\n\n");
     }
 
-    printf("\nPlease Input The Code!\n");
-    printf("Choose Your Cinema: ");
-    scanf("%d", &userCinema);
-    printf("\n");
-
-    tempLoc = *cin_head;
-    while (tempLoc->code != userProv || tempLoc->num != userCinema)
+    while (1)
     {
-        tempLoc = tempLoc->next;
-    }
+        printf("\nAvailable Cinemas in %s:\n", province);
+        tempLoc = *cin_head;
+        int displayCounter = 1;
 
-    strcpy(location, tempLoc->cinema);
+        for (int i = 0; i < counterLoc; i++)
+        {
+            if (tempLoc->code == userProv)
+            {
+                printf("%d. %s\n", displayCounter, tempLoc->cinema);
+                displayCounter++;
+            }
+            tempLoc = tempLoc->next;
+        }
+
+        if (displayCounter == 1)
+        {
+            printf("No Cinemas Available in This Province.\n");
+            return;
+        }
+
+        printf("\nPlease Input The Code!\n");
+        printf("Choose Your Cinema: ");
+        scanf("%d", &userCinema);
+
+        tempLoc = *cin_head;
+        for (int i = 0; i < counterLoc; i++)
+        {
+            if (tempLoc->code == userProv && tempLoc->num == userCinema)
+            {
+                strcpy(location, tempLoc->cinema);
+                return;
+            }
+            tempLoc = tempLoc->next;
+        }
+
+        printf("Invalid Cinema Code! Please Try Again.\n");
+    }
 }
+
+
 
 void owner(cinLoc **cin_head, cinLoc **cin_tail, cinProv **cin_front, cinProv **cin_back)
 {
@@ -1260,7 +1291,7 @@ void printInventory() {
 }
 
 // USER FOOD & BEV FUNCTIONS
-void buyBev(struct cart **buy, struct beverage *drink_head) {
+void buyBev(struct cart *buy, struct beverage *drink_head) {
     FILE *beverage_file = fopen("beverage.txt", "r");
     if (!beverage_file) {
         printf("Error: Could not open beverage.txt.\n");
@@ -1330,11 +1361,8 @@ void buyBev(struct cart **buy, struct beverage *drink_head) {
 
     selected->stock -= quan;
 
-    struct item *new_drink = malloc(sizeof(struct item));
-    if (!new_drink) {
-        printf("Memory allocation failed.\n");
-        return;
-    }
+    // Stack Push
+    struct item *new_drink = (struct item *)malloc(sizeof(struct item));
     new_drink->fQuantity = 0;
     new_drink->fPrice = 0;
     strcpy(new_drink->buyFood.name, "");
@@ -1343,9 +1371,9 @@ void buyBev(struct cart **buy, struct beverage *drink_head) {
     new_drink->bQuantity = quan;
     new_drink->bPrice = quan * selected->price;
 
-    new_drink->next = (*buy)->items;
-    (*buy)->items = new_drink;
-    (*buy)->cartTop++;
+    new_drink->next = buy->items;  // PUSH to stack
+    buy->items = new_drink;
+    buy->cartTop++;
 
     FILE *beverage_write = fopen("beverage.txt", "w");
     if (!beverage_write) {
@@ -1364,7 +1392,7 @@ void buyBev(struct cart **buy, struct beverage *drink_head) {
 }
 
 
-void buyFood(struct cart **buy, struct food *food_head) {
+void buyFood(struct cart *buy, struct food *food_head) {
     int choice;
     FILE *pick = NULL;
     printf("Category:\n");
@@ -1382,26 +1410,26 @@ void buyFood(struct cart **buy, struct food *food_head) {
         case 2: file = "fritters.txt"; break;
         case 3: file = "lightmeal.txt"; break;
         case 4: file = "bakery.txt"; break;
-        default: printf("Invalid choice.\n"); return;
+        default: printf("Invalid choice\n"); return;
     }
 
-    pick = fopen(file, "r");
-    if (!pick) {
+    FILE *food_file = fopen(file, "r");
+    if (!food_file) {
         printf("Error: Could not open %s.\n", file);
         return;
     }
 
     food_head = NULL;
-    while (!feof(pick)) {
-        struct food *new_food = malloc(sizeof(struct food));
-        if (fscanf(pick, "%[^#]#%d#%d\n", new_food->name, &new_food->stock, &new_food->price) == 3) {
-            new_food->next = food_head;
-            food_head = new_food;
+    while (!feof(food_file)) {
+        struct food *food = (struct food *)malloc(sizeof(struct food));
+        if (fscanf(food_file, "%[^#]#%d#%d\n", food->name, &food->stock, &food->price) == 3) {
+            food->next = food_head;
+            food_head = food;
         } else {
-            free(new_food);
+            free(food);
         }
     }
-    fclose(pick);
+    fclose(food_file);
 
     int total = 0;
     struct food *counter = food_head;
@@ -1454,11 +1482,8 @@ void buyFood(struct cart **buy, struct food *food_head) {
 
     selected->stock -= quan;
 
-    struct item *new_food = malloc(sizeof(struct item));
-    if (!new_food) {
-        printf("Memory allocation failed.\n");
-        return;
-    }
+    // Stack Push
+    struct item *new_food = (struct item *)malloc(sizeof(struct item));
     new_food->bQuantity = 0;
     new_food->bPrice = 0;
     strcpy(new_food->buyDrink.name, "");
@@ -1467,13 +1492,13 @@ void buyFood(struct cart **buy, struct food *food_head) {
     new_food->fQuantity = quan;
     new_food->fPrice = quan * selected->price;
 
-    new_food->next = (*buy)->items;
-    (*buy)->items = new_food;
-    (*buy)->cartTop++;
+    new_food->next = buy->items; // PUSH to stack
+    buy->items = new_food;
+    buy->cartTop++;
 
     FILE *food_write = fopen(file, "w");
     if (!food_write) {
-        printf("Error writing to file.\n");
+        printf("Error: Could not write to %s\n", file);
         return;
     }
 
@@ -1486,9 +1511,6 @@ void buyFood(struct cart **buy, struct food *food_head) {
 
     printf("'%s' added to cart successfully.\n", selected->name);
 }
-
-
-
 
     void seeCart(struct cart *buy) {
         if (buy->cartTop == -1 || buy->items == NULL) {
@@ -1732,11 +1754,11 @@ void userFood(struct food **food_head, struct beverage **drink_head, struct cart
         getchar(); 
         switch (choice){
             case 1:
-            buyFood(&buy, snack);
+            buyFood(buy, snack);
             break;
 
             case 2:
-            buyBev(&buy, drink);
+            buyBev(buy, drink);
             break;
 
             case 3:
@@ -1761,7 +1783,7 @@ void userFood(struct food **food_head, struct beverage **drink_head, struct cart
         }
      
     }
-    
+
 }
 
 void invoice(struct cart *buy, char *selectedMovie, char *cinProvChoice, char *cinLocChoice, int totalFoodPrice) {
