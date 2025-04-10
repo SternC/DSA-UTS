@@ -1,0 +1,16 @@
+========================================
+               INVOICE                  
+========================================
+Movie: MICKEY 17
+Location: JABODETABEK, AEON MALL BSD CITY XXI
+Ticket Price: Rp70000
+Food & Beverage Price: Rp80000
+Total Price: Rp150000
+========================================
+DISCLAIMER: Any movie ticket / food you bought cannot be returned or refunded.
+Ticket should be claimed at the cinema cashier.
+Food should be claimed at the food cashier.
+How to claim your ticket & food: 
+1. Go to the Cinema that you selected
+2. Go to the ticket cashier to select your movie schedule and seating then claim your ticket
+3. Go to the food cashier to claim your food

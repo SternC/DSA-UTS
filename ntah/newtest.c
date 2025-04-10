@@ -10,111 +10,98 @@ typedef struct {
     char age[10];
 } Movie;
 
-Movie movies[100];
-int count = 0;
-
-
-void loadMovies() {
+void loadMovies(Movie movies[], int *count) {
     FILE *fp = fopen("movie.txt", "r");
     if (fp == NULL) {
         printf("File not found or cannot be opened!\n");
     } else {
-        while (count < 100 && fscanf(fp, " %[^#]#%[^#]#%d#%[^#]#%[^\n]\n", 
-                movies[count].movieName, movies[count].genre, 
-                &movies[count].duration, movies[count].director, 
-                movies[count].age) == 5) {
-            count++;
+        while (*count < 100 && fscanf(fp, " %[^#]#%[^#]#%d#%[^#]#%[^\n]\n", 
+                movies[*count].movieName, movies[*count].genre, 
+                &movies[*count].duration, movies[*count].director, 
+                movies[*count].age) == 5) {
+                (*count)++;
         }
         fclose(fp);
     }
 }
 
-void saveMovies() {
-    FILE *fin = fopen("movie.txt", "a");
+void saveMovies(Movie movies[], int *count) {
+    FILE *fin = fopen("movie.txt", "w");
     if (!fin) {
         printf("Error opening file!\n");
         return;
     }
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < *count; i++) {
         fprintf(fin, "%s#%s#%d#%s#%s\n", movies[i].movieName, movies[i].genre, 
                 movies[i].duration, movies[i].director, movies[i].age);
     }
     fclose(fin);
 }
 
-void addMovie() {
-    if (count >= 100) {
+void addMovie(Movie movies[], int *count) {
+    if (*count >= 100) {
         printf("Movie list is full!\n");
         return;
     }
     printf("\nMovie Name   : ");
-    scanf(" %[^\n]", movies[count].movieName);
+    scanf(" %[^\n]", movies[*count].movieName);
+    getchar();
     printf("Genre        : ");
-    scanf(" %[^\n]", movies[count].genre);
+    scanf(" %[^\n]", movies[*count].genre);
     printf("Duration     : ");
-    scanf("%d", &movies[count].duration);
+    scanf("%d", &movies[*count].duration);
     printf("Director     : ");
-    scanf(" %[^\n]", movies[count].director);
+    scanf(" %[^\n]", movies[*count].director);
     printf("Age Rating   : ");
-    scanf(" %[^\n]", movies[count].age);
-    count++;
-    saveMovies();
+    scanf(" %[^\n]", movies[*count].age);
+    (*count)++;
+    saveMovies(movies, count);
     printf("\nMovie Added Successfully!\n");
 }
 
-void removeMovie() {
-    if (count == 0) {
-        printf("No movies to remove! Please add a movie first.\n");
+void removeMovie(Movie movies[], int *count) {
+    if (*count == 0) {
+        printf("Movie List is Empty! Please add a movie first.\n");
         return;
     }
-    char removeName[50];
-    printf("\nSearch Movie Name to Remove: ");
-    scanf(" %[^\n]", removeName);
-    
-    int found = -1;
-    for (int i = 0; i < count; i++) {
-        int match = 1;
-        for (int j = 0; removeName[j] != '\0' || movies[i].movieName[j] != '\0'; j++) {
-            if ((removeName[j] | 32) != (movies[i].movieName[j] | 32)) {
-                match = 0;
-                break;
-            }
-        }
-        if (match) {
-            found = i;
-            break;
-        }
-    }
-    
-    if (found == -1) {
-        printf("\nMovie not found!\n");
+
+    int removeNum;
+    printf("\nInput Movie Number to Remove: ");
+    scanf("%d", &removeNum);
+
+    if (removeNum < 1 || removeNum > *count) {
+        printf("Invalid movie number!\n");
         return;
     }
-    for (int i = found; i < count - 1; i++) {
+
+    printf("Removing movie: %s\n", movies[removeNum - 1].movieName);
+
+    for (int i = removeNum - 1; i < *count - 1; i++) {
         movies[i] = movies[i + 1];
     }
-    count--;
-    saveMovies();
-    printf("\nMovie '%s' removed successfully!\n", removeName);
+    (*count)--;
+    saveMovies(movies, count);
+    printf("Movie removed successfully!\n");
 }
 
-void viewMovies() {
+void viewMovies(Movie movies[], int *count) {
     if (count == 0) {
         printf("Movie List is Empty! Please add a movie first.");
+        return;
     }
     printf("\n----------------------------------------------------------------------------------------------------------------------\n");
     printf(" No |                  Movie Name                   |        Genre       |  Duration |       Director     |Age Rating|\n");
     printf("----------------------------------------------------------------------------------------------------------------------\n");
-    for (int i = 0; i < count; i++) {
-        printf("%4d|%-47s|%-20s|%-11d|%-20s|%-10s|\n",
+    for (int i = 0; i < *count; i++) {
+        printf("%4d|%-47s|%-20s|%-4d%7s|%-20s|%-10s|\n",
                 i+1, movies[i].movieName, movies[i].genre, 
-                movies[i].duration, movies[i].director, 
+                movies[i].duration,"minutes", movies[i].director, 
                 movies[i].age);
     }
 }
 
-void searchMovie() {
-    if (count == 0) {
+void searchMovie(Movie movies[], int *count) {
+    if (*count == 0) {
         printf("Movie List is Empty! Please add a movie first.\n");
         return;
     }
@@ -124,7 +111,7 @@ void searchMovie() {
     scanf(" %[^\n]", searchName);
 
     int found = 0;
-    for (int movie = 0; movie < count; movie++) {
+    for (int movie = 0; movie < *count; movie++) {
         int match = 1;
         for (int find = 0; searchName[find] != '\0' || movies[movie].movieName[find] != '\0'; find++) {
             if (searchName[find] >= 'a' && searchName[find] <= 'z') {
@@ -158,8 +145,10 @@ void searchMovie() {
 }
 
 int main() {
+    Movie movies[100];
+    int count = 0;
     int choose, menu, list;
-    loadMovies();
+    loadMovies(movies, &count);
 
     while (choose != 1 && choose != 2) {
         printf("\nOwner (1) or User (2): ");
@@ -173,9 +162,10 @@ int main() {
                 getchar();
 
                 if (menu == 1) {
-                    addMovie();
+                    addMovie(movies, &count);
                 } else if (menu == 2) {
-                    removeMovie();
+                    viewMovies(movies, &count);
+                    removeMovie(movies, &count);
                 }
             }
             printf("Thank you! We appreciate your choice.\n");
@@ -186,9 +176,9 @@ int main() {
                 getchar();
 
                 if (list == 1) {
-                    viewMovies();
+                    viewMovies(movies, &count);
                 } else if (list == 2) {
-                    searchMovie();
+                    searchMovie(movies, &count);
                 }
             }
             printf("Thank you! We appreciate your choice.\n");
