@@ -1,3 +1,3 @@
-salty#19#1200000
+salty#16#1200000
 caramel#19#40000
-butter#20#30000
+butter#19#30000

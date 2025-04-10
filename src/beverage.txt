@@ -1,4 +1,4 @@
-tea#30#20000
+tea#28#20000
 milo#10#20000
 water#20#100000
-tealychee#20#30000
+tealychee#19#30000

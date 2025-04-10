@@ -1,2 +1,2 @@
-dumpling#10#20000
+dumpling#9#20000
 fries#32#20000

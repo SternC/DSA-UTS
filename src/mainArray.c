@@ -852,7 +852,7 @@ void printInventory(struct food snack[], struct beverage drink[])
 struct item
 {
     struct food buyFood;
-    struct beverage buydrink;
+    struct beverage buyDrink;
     int fQuantity;
     int bQuantity;
     int fPrice;
@@ -911,7 +911,7 @@ void buyBev(struct cart *buy, struct beverage drink[])
         }
 
         buy->cartTop++;
-        strcpy(buy->items[buy->cartTop].buydrink.name, drink[id - 1].name);
+        strcpy(buy->items[buy->cartTop].buyDrink.name, drink[id - 1].name);
         buy->items[buy->cartTop].bQuantity = quan;
         buy->items[buy->cartTop].bPrice = quan * drink[id - 1].price;
 
@@ -1048,7 +1048,7 @@ void seeCart(struct cart *buy)
     printf("===================================================================\n");
     printf("                               Cart                                \n");
     printf("===================================================================\n");
-    for (int i = 0; i <= buy->cartTop; i++)
+    for (int i = buy->cartTop; i >= 0; i--)
     {
         if (buy->items[i].fQuantity > 0)
         {
@@ -1056,10 +1056,28 @@ void seeCart(struct cart *buy)
         }
         if (buy->items[i].bQuantity > 0)
         {
-            printf("Drink   : %-15s  Quantity: %-5d  Total: %-5d\n", buy->items[i].buydrink.name, buy->items[i].bQuantity, buy->items[i].bPrice);
+            printf("Drink   : %-15s  Quantity: %-5d  Total: %-5d\n", buy->items[i].buyDrink.name, buy->items[i].bQuantity, buy->items[i].bPrice);
         }
     }
     printf("===================================================================\n");
+}
+
+void popCart(struct cart *buy)
+{
+    if (buy->cartTop == -1)
+    {
+        printf("Cart is already empty!\n");
+        return;
+    }
+
+    struct item *temp = &buy->items[buy->cartTop];
+
+    if (temp->fQuantity > 0)
+        printf("Removed Food  : %s\n", temp->buyFood.name);
+    if (temp->bQuantity > 0)
+        printf("Removed Drink : %s\n", temp->buyDrink.name);
+
+    buy->cartTop--;
 }
 
 void changeQuantity(struct cart *buy)
@@ -1087,7 +1105,7 @@ void changeQuantity(struct cart *buy)
             found = 1;
             break;
         }
-        else if (choice == 2 && strcmp(merk, buy->items[i].buydrink.name) == 0)
+        else if (choice == 2 && strcmp(merk, buy->items[i].buyDrink.name) == 0)
         {
             printf("New quantity: ");
             scanf("%d", &newquan);
@@ -1135,7 +1153,7 @@ void deleteByName(struct cart *buy)
             printf("Food item '%s' deleted successfully from cart.\n", name);
             break;
         }
-        else if (choice == 2 && strcmp(buy->items[i].buydrink.name, name) == 0 && buy->items[i].bQuantity > 0)
+        else if (choice == 2 && strcmp(buy->items[i].buyDrink.name, name) == 0 && buy->items[i].bQuantity > 0)
         {
             for (int j = i; j < buy->cartTop; j++)
             {
@@ -1154,7 +1172,7 @@ void deleteByName(struct cart *buy)
     }
 }
 
-void foodModification(struct food snack[], struct beverage drink[], struct cart *buy)
+void ownerFood(struct food snack[], struct beverage drink[], struct cart *buy)
 {
 
     int choice = 0;
@@ -1221,8 +1239,9 @@ void userFood(struct food snack[], struct beverage drink[], struct cart *buy)
         printf("2. Buy drinks\n");
         printf("3. See cart \n");
         printf("4. Change quantity\n");
-        printf("5. Delete item\n");
-        printf("6. Exit \n");
+        printf("5. Delete item by name\n");
+        printf("6. Delete recently added item\n");
+        printf("7. Exit \n");
         printf("Choice: ");
         scanf(" %d", &choice);
         getchar();
@@ -1249,6 +1268,10 @@ void userFood(struct food snack[], struct beverage drink[], struct cart *buy)
             break;
 
         case 6:
+            popCart(buy);
+            break;
+
+        case 7:
             printf("Exiting program.\n");
             return;
 
@@ -1608,7 +1631,7 @@ int main()
                     }
                     else if (ownerSelection == 3)
                     {
-                        foodModification(snack, drink, &buy);
+                        ownerFood(snack, drink, &buy);
                     }
                     else if (ownerSelection == 4)
                     {
