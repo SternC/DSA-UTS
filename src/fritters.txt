@@ -1,2 +1,2 @@
-fries#17#20000
-dumpling#10#30000
+dumpling#10#20000
+fries#32#20000

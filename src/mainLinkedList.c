@@ -1136,7 +1136,7 @@ void checkInventory(struct food *food_head, struct beverage *drink_head) {
                         getchar();
                         drink->price = newPrice;
                     } else if (choice == 2) {
-                        printf("Input new stock quantity: ");
+                        printf("Input added stock quantity: ");
                         scanf("%d", &newStock);
                         getchar();
                         drink->stock += newStock;
