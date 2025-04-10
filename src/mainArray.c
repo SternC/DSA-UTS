@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_CART 100
+
 void clean()
 {
 #ifdef _WIN32
