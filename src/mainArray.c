@@ -1556,7 +1556,7 @@ int main()
     // Movies
     Movie movies[100];
     int count;
-    char selectedMovie[50];
+    char selectedMovie[50] = "None";
     loadMovies(movies, &count);
 
     // Food & Beverages
